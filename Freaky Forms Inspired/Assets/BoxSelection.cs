@@ -24,7 +24,10 @@ public class BoxSelection : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier)
         {
             lineRend.positionCount = 4;
-            initialMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //initialMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //new line
+            initialMousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
+            //******
             lineRend.SetPosition(0, new Vector2(initialMousePosition.x, initialMousePosition.y));
             lineRend.SetPosition(1, new Vector2(initialMousePosition.x, initialMousePosition.y));
             lineRend.SetPosition(2, new Vector2(initialMousePosition.x, initialMousePosition.y));
@@ -45,7 +48,10 @@ public class BoxSelection : MonoBehaviour
 
         if (Input.GetMouseButton(0) && !Soldier.mouseOverSoldier)
         {
-            currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //new line*****
+            currentMousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
+            //******
             lineRend.SetPosition(0, new Vector2(initialMousePosition.x, initialMousePosition.y));
             lineRend.SetPosition(1, new Vector2(initialMousePosition.x, currentMousePosition.y));
             lineRend.SetPosition(2, new Vector2(currentMousePosition.x, currentMousePosition.y));

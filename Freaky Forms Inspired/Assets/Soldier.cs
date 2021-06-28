@@ -55,15 +55,19 @@ public class Soldier : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            /*
             dragOffsetX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.position.x;
             dragOffsetY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y;
+            */
+            dragOffsetX = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)).x - transform.position.x;
+            dragOffsetY = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)).y - transform.position.y;
         }
 
         // And ofcourse I need to get mouse position
 
         if (Input.GetMouseButton(0))
         {
-            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
         }
 
         //Pretty obvious piece of code I guess :-) If it's not just let me know.
@@ -109,7 +113,7 @@ public class Soldier : MonoBehaviour
             dragSelectedSoldiersAllowed = false;
         }
 
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
         transform.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
     }
 }
