@@ -13,8 +13,23 @@ public class BodyPart : MonoBehaviour
     public bool overTrash = false;
     public bool selected = false;
 
+    //selection variables
+    private SpriteRenderer sprRenderer;
+    private bool soldierSelected;
+    public static bool dragSelectedSoldiersAllowed, mouseOverSoldier;
+    private Vector2 mousePos;
+    private float dragOffsetX, dragOffsetY;
+
+
+
     private void Start()
     {
+        sprRenderer = GetComponent<SpriteRenderer>();
+        soldierSelected = false;
+        dragSelectedSoldiersAllowed = false;
+        mouseOverSoldier = false;
+
+
         SelectState(true);
         objectWithSprite = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
         polygonCollider2D = objectWithSprite.GetComponent<PolygonCollider2D>();
@@ -33,6 +48,31 @@ public class BodyPart : MonoBehaviour
         UpdatePolygonCollider2D();
 
     }
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.GetComponent<BodyPartSelectionManager>())
+        {
+            //sprRenderer.color = new Color(1f, 0f, 0f, 1f);
+            //enable outline pulse
+            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
+            soldierSelected = true;
+        }
+    }
+
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.GetComponent<BodyPartSelectionManager>() && Input.GetMouseButton(0))
+        {
+            //sprRenderer.color = new Color(1f, 1f, 1f, 1f);
+            //disable outline pulse
+            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+            soldierSelected = false;
+        }
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonUp(0))
@@ -49,7 +89,67 @@ public class BodyPart : MonoBehaviour
         {
             transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
         }
+
+        //selection code***********************
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            dragOffsetX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.position.x;
+            dragOffsetY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y;
+        }
+
+        // And ofcourse I need to get mouse position
+
+        if (Input.GetMouseButton(0))
+        {
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+
+        //Pretty obvious piece of code I guess :-) If it's not just let me know.
+
+        if (soldierSelected && dragSelectedSoldiersAllowed)
+        {
+            transform.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
+        }
+
+        // If right mouse button is pressed then selection is reset
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            soldierSelected = false;
+            dragSelectedSoldiersAllowed = false;
+            //sprRenderer.color = new Color(1f, 1f, 1f, 1f);
+            //disable outline pulse
+            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+        }
     }
+
+
+    private void OnMouseDown()
+    {
+        mouseOverSoldier = true;
+    }
+
+    private void OnMouseUp()
+    {
+        mouseOverSoldier = false;
+        dragSelectedSoldiersAllowed = false;
+    }
+
+    private void OnMouseDrag()
+    {
+        dragSelectedSoldiersAllowed = true;
+
+        if (!soldierSelected)
+        {
+            dragSelectedSoldiersAllowed = false;
+        }
+
+
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        transform.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
+    }
+
 
     private void FixedUpdate()
     {
@@ -62,18 +162,6 @@ public class BodyPart : MonoBehaviour
     public void SelectState(bool selectState)
     {
         selected = selectState;
-
-        BodyPartSelectionManager manager;
-        manager = GameObject.FindGameObjectWithTag("Manager").transform.gameObject.GetComponent<BodyPartSelectionManager>();
-
-        if (selectState == true)
-        {
-            manager.selectedBodyPart = gameObject;
-        }
-        else
-        {
-            manager.selectedBodyPart = null;
-        }
     }
 
     public void ReleaseBodyPart()
