@@ -10,9 +10,12 @@ public class BodyPart : MonoBehaviour
     PolygonCollider2D polygonCollider2D;
     Sprite sprite;
     GameObject objectWithSprite;
+    public bool overTrash = false;
+    public bool selected = false;
 
     private void Start()
     {
+        SelectState(true);
         objectWithSprite = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
         polygonCollider2D = objectWithSprite.GetComponent<PolygonCollider2D>();
         sprite = objectWithSprite.GetComponent<SpriteRenderer>().sprite;
@@ -30,12 +33,21 @@ public class BodyPart : MonoBehaviour
         UpdatePolygonCollider2D();
 
     }
-
     private void Update()
     {
         if (Input.GetMouseButtonUp(0))
         {
             ReleaseBodyPart();
+            if (overTrash == true)
+            {
+
+                Destroy(gameObject);
+            }
+        }
+
+        if (!selected)
+        {
+            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
         }
     }
 
@@ -47,14 +59,40 @@ public class BodyPart : MonoBehaviour
         }
     }
 
-
-    void ReleaseBodyPart()
+    public void SelectState(bool selectState)
     {
+        selected = selectState;
+
+        BodyPartSelectionManager manager;
+        manager = GameObject.FindGameObjectWithTag("Manager").transform.gameObject.GetComponent<BodyPartSelectionManager>();
+
+        if (selectState == true)
+        {
+            manager.selectedBodyPart = gameObject;
+        }
+        else
+        {
+            manager.selectedBodyPart = null;
+        }
+    }
+
+    public void ReleaseBodyPart()
+    {
+        FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(-1);
+        //enable outline pulse
+        transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
+
         releasedBodyPart = true;
     }
 
     public void GrabBodyPart()
     {
+        SelectState(true);
+        FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
+
+        //disable outline pulse
+        transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+
         releasedBodyPart = false;
     }
 

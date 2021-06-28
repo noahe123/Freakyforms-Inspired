@@ -6,13 +6,21 @@ public class DropShadow : MonoBehaviour
     public Vector2 ShadowOffset;
     public Material ShadowMaterial;
 
+    SpriteRenderer shadowSpriteRenderer;
     SpriteRenderer spriteRenderer;
     GameObject shadowGameobject;
 
+    //color stuff
+    public Color colorStart, colorEnd;
+    float i;
+    float rate = 2f;
+
+
     void Start()
     {
+
         //destroy old shadow if it exists
-        if (transform.childCount > 0)
+        if (transform.childCount > 0 )
         {
             Destroy(transform.GetChild(0).gameObject);
         }
@@ -30,7 +38,7 @@ public class DropShadow : MonoBehaviour
 
 
         //create a new SpriteRenderer for Shadow gameobject
-        SpriteRenderer shadowSpriteRenderer = shadowGameobject.AddComponent<SpriteRenderer>();
+        shadowSpriteRenderer = shadowGameobject.AddComponent<SpriteRenderer>();
 
         //set the shadow gameobject's sprite to the original sprite
         shadowSpriteRenderer.sprite = spriteRenderer.sprite;
@@ -42,17 +50,20 @@ public class DropShadow : MonoBehaviour
         shadowSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder - 1;
 
         //set the shadow strength
-        shadowSpriteRenderer.color = new Color(0, 0, 0, .4f);
+        shadowSpriteRenderer.color = colorStart;
 
 
 
     }
-  
+
 
     void LateUpdate()
     {
-        //update the position and rotation of the sprite's shadow with moving sprite
-        shadowGameobject.transform.position = transform.position + (Vector3)ShadowOffset;
-        shadowGameobject.transform.rotation = transform.rotation;
+        if (shadowGameobject != null)
+        {
+            //update the position and rotation of the sprite's shadow with moving sprite
+            shadowGameobject.transform.position = transform.position + (Vector3)ShadowOffset;
+            shadowGameobject.transform.rotation = transform.rotation;
+        }
     }
 }
