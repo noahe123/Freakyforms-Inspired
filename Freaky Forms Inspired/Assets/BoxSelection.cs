@@ -8,6 +8,12 @@ public class BoxSelection : MonoBehaviour
     private Vector2 initialMousePosition, currentMousePosition;
     private BoxCollider2D boxColl;
 
+    //box selection
+    float i;
+    public float rate = 1.5f;
+    public Color colourStart, colourEnd;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -90,5 +96,27 @@ public class BoxSelection : MonoBehaviour
             Destroy(boxColl);
             transform.position = Vector3.zero;
         }
+
+
+
+    }
+
+    private void FixedUpdate()
+    {
+        //line renderer
+        // Blend towards the current target colour
+        i += Time.deltaTime * rate;
+        // Animate the Shininess value
+        Color myColor = Color.Lerp(colourStart, colourEnd, Mathf.PingPong(i * 2, 1));
+
+        // If we've got to the current target colour, choose a new one
+        if (i >= 1)
+        {
+            i = 0;
+        }
+
+
+        lineRend.startColor = myColor;
+        lineRend.endColor = myColor;
     }
 }

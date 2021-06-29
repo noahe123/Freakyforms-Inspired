@@ -7,6 +7,7 @@ using TMPro;
 
 public class ColorCircle : MonoBehaviour
 {
+    public GameObject objectOutlining;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +19,6 @@ public class ColorCircle : MonoBehaviour
     void Update()
     {
         transform.position = Vector3.Lerp(transform.position, Input.mousePosition, 20f*Time.deltaTime);
-
     }
+    
 }

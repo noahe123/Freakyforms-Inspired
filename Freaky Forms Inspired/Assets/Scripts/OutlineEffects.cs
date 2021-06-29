@@ -15,12 +15,13 @@ public class OutlineEffects : MonoBehaviour
         rend = GetComponent<Renderer>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         // Blend towards the current target colour
         i += Time.deltaTime * rate;
         // Animate the Shininess value
         Color myColor = Color.Lerp(colourStart, colourEnd, Mathf.PingPong(i * 2, 1));
+
         // If we've got to the current target colour, choose a new one
         if (i >= 1)
         {

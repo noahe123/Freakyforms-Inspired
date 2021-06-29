@@ -61,7 +61,7 @@ public class BodyPart : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)));
-                Debug.Log(transform.position);
+            Debug.Log(transform.position);
 
             mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
             dragOffsetX = mousePos.x - transform.position.x;

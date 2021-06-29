@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Trash
   - Manager
+  - Color Circle
   layers:
   - Default
   - TransparentFX
