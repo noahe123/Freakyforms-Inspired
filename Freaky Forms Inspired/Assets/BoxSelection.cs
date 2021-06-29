@@ -13,6 +13,7 @@ public class BoxSelection : MonoBehaviour
     {
         lineRend = GetComponent<LineRenderer>();
         lineRend.positionCount = 0;
+        lineRend.widthMultiplier = .25f;
     }
 
     // Update is called once per frame
@@ -21,7 +22,7 @@ public class BoxSelection : MonoBehaviour
         // When left mouse button is pressed and mouse pointer is not over any soldier
         // I create four points at mouse position
 
-        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier)
+        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier && !NonSelectableZone.mouseOverZone)
         {
             lineRend.positionCount = 4;
             //initialMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -39,6 +40,20 @@ public class BoxSelection : MonoBehaviour
             boxColl = gameObject.AddComponent<BoxCollider2D>();
             boxColl.isTrigger = true;
             boxColl.offset = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
+            
+        }
+
+        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier)
+        {
+            foreach (Soldier body in FindObjectsOfType<Soldier>())
+            {
+                //body.SelectState(false);
+                body.soldierSelected = false;
+                body.dragOffsetX = 0; 
+                body.dragOffsetY = 0;
+                body.transform.parent.parent.parent.GetComponent<BodyPart>().SelectState(false);
+            }
         }
 
         // While mouse button is being held down I can draw a rectangle
@@ -46,7 +61,7 @@ public class BoxSelection : MonoBehaviour
         // mouse initial position when button was pressed for the first time
         // and its current position
 
-        if (Input.GetMouseButton(0) && !Soldier.mouseOverSoldier)
+        if (Input.GetMouseButton(0) && !Soldier.mouseOverSoldier && !NonSelectableZone.mouseOverZone)
         {
             //currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             //new line*****

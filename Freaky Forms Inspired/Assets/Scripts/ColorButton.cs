@@ -22,7 +22,7 @@ public class ColorButton : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData data)
     {
         //GameObject.FindGameObjectWithTag("Manager").GetComponent<BodyPartSelectionManager>().selectedBodyPart.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color
-          //  = transform.GetChild(1).gameObject.GetComponent<Image>().color;
+           //= transform.GetChild(1).gameObject.GetComponent<Image>().color;
     }
 
 }

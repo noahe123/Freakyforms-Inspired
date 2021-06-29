@@ -4,24 +4,34 @@ using UnityEngine;
 
 public class Soldier : MonoBehaviour
 {
-    private SpriteRenderer sprRenderer;
+    //private SpriteRenderer sprRenderer;
 
-    private bool soldierSelected;
+    public bool soldierSelected;
 
     public static bool dragSelectedSoldiersAllowed, mouseOverSoldier;
 
     private Vector2 mousePos;
 
-    private float dragOffsetX, dragOffsetY;
+    public float dragOffsetX, dragOffsetY;
+
+    //my variables
+    BodyPart greatGrandParentBodyPart;
 
     // Start is called before the first frame update
     void Start()
     {
-        sprRenderer = GetComponent<SpriteRenderer>();
+        //sprRenderer = GetComponent<SpriteRenderer>();
         soldierSelected = false;
         dragSelectedSoldiersAllowed = false;
         mouseOverSoldier = false;
+
+        //my code
+        greatGrandParentBodyPart = transform.parent.parent.parent.GetComponent<BodyPart>();
+
     }
+
+
+
 
     // When BoxSelections collider meets a soldier, soldier changes its color tint to Red
     // and soldier is marked as selected now
@@ -30,7 +40,10 @@ public class Soldier : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<BoxSelection>())
         {
-            sprRenderer.color = new Color(1f, 0f, 0f, 1f);
+            //enable outline pulse
+            //transform.parent.GetChild(1).gameObject.SetActive(true);
+            //greatGrandParentBodyPart.GrabBodyPart();
+            greatGrandParentBodyPart.SelectState(true);
             soldierSelected = true;
         }
     }
@@ -42,7 +55,10 @@ public class Soldier : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<BoxSelection>() && Input.GetMouseButton(0))
         {
-            sprRenderer.color = new Color(1f, 1f, 1f, 1f);
+            //disable outline pulse
+            //transform.parent.GetChild(1).gameObject.SetActive(false);
+            greatGrandParentBodyPart.ReleaseBodyPart();
+
             soldierSelected = false;
         }
     }
@@ -61,6 +77,7 @@ public class Soldier : MonoBehaviour
             */
             dragOffsetX = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)).x - transform.position.x;
             dragOffsetY = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)).y - transform.position.y;
+
         }
 
         // And ofcourse I need to get mouse position
@@ -74,17 +91,19 @@ public class Soldier : MonoBehaviour
 
         if (soldierSelected && dragSelectedSoldiersAllowed)
         {
-            transform.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
+            transform.parent.parent.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
         }
 
         // If right mouse button is pressed then selection is reset
-
+        /*
         if (Input.GetMouseButtonDown(1))
         {
             soldierSelected = false;
             dragSelectedSoldiersAllowed = false;
-            sprRenderer.color = new Color(1f, 1f, 1f, 1f);
-        }
+            //disable outline pulse
+            //transform.parent.GetChild(1).gameObject.SetActive(false);
+            //greatGrandParentBodyPart.ReleaseBodyPart();
+        }*/
     }
 
     // No need to explain I hope
@@ -92,12 +111,15 @@ public class Soldier : MonoBehaviour
     private void OnMouseDown()
     {
         mouseOverSoldier = true;
+
     }
 
     // Same here
 
     private void OnMouseUp()
     {
+        //soldierSelected = false;
+       
         mouseOverSoldier = false;
         dragSelectedSoldiersAllowed = false;
     }
@@ -106,6 +128,7 @@ public class Soldier : MonoBehaviour
 
     private void OnMouseDrag()
     {
+
         dragSelectedSoldiersAllowed = true;
 
         if (!soldierSelected)
@@ -113,7 +136,9 @@ public class Soldier : MonoBehaviour
             dragSelectedSoldiersAllowed = false;
         }
 
-        mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
-        transform.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
+        /*mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
+        transform.parent.parent.transform.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);*/
+        //greatGrandParentBodyPart.GrabBodyPart();
+        //greatGrandParentBodyPart.selected = true;
     }
 }

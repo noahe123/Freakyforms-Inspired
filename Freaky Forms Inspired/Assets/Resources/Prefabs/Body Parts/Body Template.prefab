@@ -336,6 +336,7 @@ GameObject:
   - component: {fileID: 805715219933486722}
   - component: {fileID: 1075638271}
   - component: {fileID: 1391800064}
+  - component: {fileID: 325906168}
   m_Layer: 0
   m_Name: Body Template Normals
   m_TagString: Untagged
@@ -834,3 +835,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &325906168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5273402539418144726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d22c316c0012a34d8b9925094488bf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soldierSelected: 0
+  dragOffsetX: 0
+  dragOffsetY: 0

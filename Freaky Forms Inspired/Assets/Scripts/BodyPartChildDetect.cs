@@ -12,7 +12,6 @@ public class BodyPartChildDetect : MonoBehaviour
     private void OnMouseDown()
     {
         greatGrandParentBodyPart.GrabBodyPart();
-        greatGrandParentBodyPart.selected = true;
     }
 
     private void Update()
@@ -20,7 +19,7 @@ public class BodyPartChildDetect : MonoBehaviour
         //deactivate 
         if (Input.GetMouseButtonDown(0) && greatGrandParentBodyPart.releasedBodyPart == true)
         {
-            greatGrandParentBodyPart.SelectState(false);
+            //greatGrandParentBodyPart.SelectState(false);
         }
     }
 
