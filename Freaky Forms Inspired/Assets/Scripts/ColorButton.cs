@@ -7,22 +7,40 @@ using TMPro;
 
 
 
-public class ColorButton : MonoBehaviour, IPointerDownHandler
+public class ColorButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 {
+	public Button myButton;
+    public GameObject colorCircle;
+    public Color myColor;
 
-    private Button myButton;
+	void Start()
+	{
+        myColor = transform.GetChild(1).GetComponent<Image>().color;
+        colorCircle = transform.parent.parent.parent.GetChild(4).gameObject;
 
-    void Start()
+        Button btn = GetComponent<Button>();
+	}
+    //OnPointerDown is also required to receive OnPointerUp callbacks
+    public void OnPointerDown(PointerEventData eventData)
     {
-        myButton = GetComponent<Button>();
-        Button btn = myButton.GetComponent<Button>();
-
+        colorCircle.GetComponent<Image>().color = myColor;
+        colorCircle.GetComponent<Image>().enabled = true;
     }
 
-    public void OnPointerDown(PointerEventData data)
+    //Do this when the mouse click on this selectable UI object is released.
+    public void OnPointerUp(PointerEventData eventData)
     {
-        //GameObject.FindGameObjectWithTag("Manager").GetComponent<BodyPartSelectionManager>().selectedBodyPart.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color
-           //= transform.GetChild(1).gameObject.GetComponent<Image>().color;
-    }
+        colorCircle.GetComponent<Image>().enabled = false;
 
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var hits = Physics2D.GetRayIntersectionAll(ray, 1500f);
+
+            foreach (var hit in hits)
+            {
+                if (hit.collider.name.Contains("Body Template Normals"))
+                {
+                     hit.collider.gameObject.transform.parent.parent.gameObject.GetComponent<SpriteRenderer>().color = myColor;
+                }
+            }
+    }
 }
