@@ -322,6 +322,8 @@ MonoBehaviour:
   followOffset: {x: 1000, y: 1000}
   overTrash: 0
   selected: 1
+  dragOffsetX: 0
+  dragOffsetY: 0
 --- !u!1 &5273402539418144726
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,3 +852,4 @@ MonoBehaviour:
   soldierSelected: 0
   dragOffsetX: 0
   dragOffsetY: 0
+  noOffsetPlease: 0

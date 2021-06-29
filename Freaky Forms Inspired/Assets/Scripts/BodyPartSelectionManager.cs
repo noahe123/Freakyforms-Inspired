@@ -5,6 +5,7 @@ using UnityEngine;
 public class BodyPartSelectionManager : MonoBehaviour
 {
     public GameObject selectedBodyPart;
+
     // Start is called before the first frame update
     private void Update()
     {

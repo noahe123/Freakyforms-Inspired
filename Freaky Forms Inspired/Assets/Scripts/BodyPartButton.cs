@@ -46,10 +46,11 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler
         prefab.GetChild(0).GetChild(0).GetComponent<SpriteMask>().sprite = mySprite;
         prefab.GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = mySprite;
         prefab.GetChild(0).GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = mySprite;
-        prefab.GetComponent<BodyPart>().GrabBodyPart();
         Vector3 vector = new Vector3(Input.mousePosition.x - Screen.width * .45f, Input.mousePosition.y - Screen.height * .43f, Camera.main.nearClipPlane);
-        Instantiate(prefab, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
-        
+        Transform spawn = Instantiate(prefab, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
+
+        spawn.GetComponent<BodyPart>().GrabBodyPart();
+
     }
 
 }

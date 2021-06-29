@@ -14,6 +14,8 @@ public class Soldier : MonoBehaviour
 
     public float dragOffsetX, dragOffsetY;
 
+    public bool noOffsetPlease ;
+
     //my variables
     BodyPart greatGrandParentBodyPart;
 
@@ -28,10 +30,8 @@ public class Soldier : MonoBehaviour
         //my code
         greatGrandParentBodyPart = transform.parent.parent.parent.GetComponent<BodyPart>();
 
+
     }
-
-
-
 
     // When BoxSelections collider meets a soldier, soldier changes its color tint to Red
     // and soldier is marked as selected now
@@ -45,6 +45,8 @@ public class Soldier : MonoBehaviour
             //greatGrandParentBodyPart.GrabBodyPart();
             greatGrandParentBodyPart.SelectState(true);
             soldierSelected = true;
+
+            
         }
     }
 
@@ -58,13 +60,23 @@ public class Soldier : MonoBehaviour
             //disable outline pulse
             //transform.parent.GetChild(1).gameObject.SetActive(false);
             greatGrandParentBodyPart.ReleaseBodyPart();
-
             soldierSelected = false;
         }
     }
 
+
     private void Update()
     {
+        if (Input.GetMouseButtonUp(0))
+        {
+            noOffsetPlease = false;
+
+            if (soldierSelected == true)
+            {
+                transform.parent.GetChild(1).gameObject.SetActive(true);
+            }
+        }
+
         // When left mouse button is clicked I need to get an offset between mouse position
         // and a soldier. This offset will help me to drag soldier/soldiers from
         // its/their initial positions depending on mouse position whitout any "jumping" issues
@@ -75,13 +87,12 @@ public class Soldier : MonoBehaviour
             dragOffsetX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.position.x;
             dragOffsetY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y;
             */
-            dragOffsetX = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)).x - transform.position.x;
-            dragOffsetY = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)).y - transform.position.y;
+
+
 
         }
 
         // And ofcourse I need to get mouse position
-
         if (Input.GetMouseButton(0))
         {
             mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
@@ -91,7 +102,9 @@ public class Soldier : MonoBehaviour
 
         if (soldierSelected && dragSelectedSoldiersAllowed)
         {
-            transform.parent.parent.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
+            // transform.parent.parent.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
+            transform.parent.parent.parent.GetComponent<BodyPart>().MoveBodyPart();
+
         }
 
         // If right mouse button is pressed then selection is reset
@@ -111,15 +124,17 @@ public class Soldier : MonoBehaviour
     private void OnMouseDown()
     {
         mouseOverSoldier = true;
-
+        greatGrandParentBodyPart.GrabBodyPart();
     }
 
     // Same here
 
     private void OnMouseUp()
     {
+
+
         //soldierSelected = false;
-       
+
         mouseOverSoldier = false;
         dragSelectedSoldiersAllowed = false;
     }

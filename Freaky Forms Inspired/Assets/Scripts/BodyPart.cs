@@ -15,7 +15,7 @@ public class BodyPart : MonoBehaviour
 
     //selection variables
     private Vector2 mousePos;
-    private float dragOffsetX, dragOffsetY;
+    public float dragOffsetX, dragOffsetY;
 
 
 
@@ -44,36 +44,39 @@ public class BodyPart : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0))
         {
+            dragOffsetX = 0;
+            dragOffsetY = 0;
             if (selected == true)
             {
                 ReleaseBodyPart();
 
             }
-            else
-            {
-                transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
 
-            }
             if (overTrash == true)
             {
+
                 Destroy(gameObject);
             }
         }
         if (Input.GetMouseButtonDown(0))
         {
-            //disable outline pulse
+            Debug.Log(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)));
+                Debug.Log(transform.position);
+
+            mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
+            dragOffsetX = mousePos.x - transform.position.x;
+            dragOffsetY = mousePos.y - transform.position.y;
+
+           
             transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+
         }
 
-        if (!selected)
-        {
-            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
-        }
 
     }
 
 
-    
+
     private void FixedUpdate()
     {
         if (!releasedBodyPart && selected)
@@ -84,21 +87,41 @@ public class BodyPart : MonoBehaviour
 
     public void SelectState(bool selectState)
     {
+
         selected = selectState;
-        
+
+        if (selectState == false)
+        {
+            //disable outline pulse
+           transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+
+        }
+        else
+        {
+            //enable outline pulse
+            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
+
+        }
+
     }
 
     public void ReleaseBodyPart()
     {
+
+        dragOffsetX = 0;
+        dragOffsetY = 0;
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(-1);
         //enable outline pulse
-            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
+        transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
         releasedBodyPart = true;
         SelectState(true);
     }
 
     public void GrabBodyPart()
     {
+        //disable outline pulse
+        transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+
         SelectState(true);
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
         releasedBodyPart = false;
@@ -107,9 +130,12 @@ public class BodyPart : MonoBehaviour
     
     public void MoveBodyPart()
     {
-        /*Vector3 vector = new Vector3(Input.mousePosition.x-Screen.width*.45f, Input.mousePosition.y-Screen.height*.43f, Camera.main.nearClipPlane);
+/*
+        Vector3 vector = new Vector3(Input.mousePosition.x-Screen.width*.45f, Input.mousePosition.y-Screen.height*.43f, Camera.main.nearClipPlane);
         Debug.Log(Camera.main.ScreenToWorldPoint(vector));
-       transform.position = Vector2.Lerp(transform.position, Camera.main.ScreenToWorldPoint(vector*10) , followSpeed);*/
+       transform.position = Vector2.Lerp(transform.position, Camera.main.ScreenToWorldPoint(vector*10) + new Vector3(dragOffsetX, dragOffsetY, 0), followSpeed);*/
+
+        
         mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
         transform.position = Vector2.Lerp(transform.position, new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY), followSpeed);
     }

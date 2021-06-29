@@ -40,8 +40,6 @@ public class BoxSelection : MonoBehaviour
             boxColl = gameObject.AddComponent<BoxCollider2D>();
             boxColl.isTrigger = true;
             boxColl.offset = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-
-            
         }
 
         if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier)
@@ -50,8 +48,6 @@ public class BoxSelection : MonoBehaviour
             {
                 //body.SelectState(false);
                 body.soldierSelected = false;
-                body.dragOffsetX = 0; 
-                body.dragOffsetY = 0;
                 body.transform.parent.parent.parent.GetComponent<BodyPart>().SelectState(false);
             }
         }
@@ -63,6 +59,8 @@ public class BoxSelection : MonoBehaviour
 
         if (Input.GetMouseButton(0) && !Soldier.mouseOverSoldier && !NonSelectableZone.mouseOverZone)
         {
+
+
             //currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             //new line*****
             currentMousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
@@ -79,8 +77,8 @@ public class BoxSelection : MonoBehaviour
             // Box collider boundaries outline that box drawn
 
             boxColl.size = new Vector2(
-                Mathf.Abs(initialMousePosition.x - currentMousePosition.x),
-                Mathf.Abs(initialMousePosition.y - currentMousePosition.y));
+            Mathf.Abs(initialMousePosition.x - currentMousePosition.x),
+            Mathf.Abs(initialMousePosition.y - currentMousePosition.y));
         }
 
         // When mouse button is released box is wiped, collider is destroyed
