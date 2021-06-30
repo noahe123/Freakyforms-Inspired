@@ -7,12 +7,17 @@ using TMPro;
 
 
 
-public class ButtonBodyPartUI : MonoBehaviour, IPointerDownHandler
+public class ButtonBodyPartUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public bool moveLeft;
+    public Vector3 offset = new Vector3(30f, -30f, 0);
+
 
     public void OnPointerDown(PointerEventData data)
     {
+        GetComponent<Shadow>().enabled = false;
+        transform.position += offset;
+
         if (moveLeft)
         {
             transform.parent.GetChild(0).gameObject.GetComponent<BodyPartUI>().MoveUILeft();
@@ -23,4 +28,10 @@ public class ButtonBodyPartUI : MonoBehaviour, IPointerDownHandler
         }
     }
 
+    public void OnPointerUp(PointerEventData data)
+    {
+        GetComponent<Shadow>().enabled = true;
+        transform.position -= offset;
+
+    }
 }

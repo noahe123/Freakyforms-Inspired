@@ -7,12 +7,14 @@ using TMPro;
 
 
 
-public class BodyPartButton : MonoBehaviour, IPointerDownHandler
+public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public Vector3 spawnOffset;
     private Sprite mySprite;
     private Button myButton;
     public Transform prefab;
+    public Vector3 offset = new Vector3(4f, -4f, 0);
+
     void Start()
     {
 
@@ -24,21 +26,30 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler
         //set text
         if (mySprite.name.Contains("head"))
         {
-            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "HEAD";
+            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "Head";
         }
         else if (mySprite.name.Contains("body"))
         {
-            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "BODY";
+            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "Body";
         }
         else if (mySprite.name.Contains("mouth"))
         {
-            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "MOUTH";
+            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "Mouth";
         }
     }
 
     public void OnPointerDown(PointerEventData data)
     {
+        GetComponent<Shadow>().enabled = false;
+        transform.position += offset;
+
         InstantiateBodyPart();
+    }
+
+    public void OnPointerUp(PointerEventData data)
+    {
+        GetComponent<Shadow>().enabled = true;
+        transform.position -= offset;
     }
 
     void InstantiateBodyPart()

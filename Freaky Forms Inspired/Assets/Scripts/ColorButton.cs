@@ -12,6 +12,7 @@ public class ColorButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 	public Button myButton;
     public GameObject colorCircle;
     public Color myColor;
+    public Vector3 offset = new Vector3(2.4f,-2.4f,0);
 
     bool isPressed;
 
@@ -28,6 +29,8 @@ public class ColorButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     //OnPointerDown is also required to receive OnPointerUp callbacks
     public void OnPointerDown(PointerEventData eventData)
     {
+        transform.GetChild(0).GetComponent<Shadow>().enabled = false;
+        transform.position += offset;
         isPressed = true;
         colorCircle.GetComponent<Image>().color = myColor;
         colorCircle.GetComponent<Image>().enabled = true;
@@ -36,6 +39,10 @@ public class ColorButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     //Do this when the mouse click on this selectable UI object is released.
     public void OnPointerUp(PointerEventData eventData)
     {
+        transform.position -= offset;
+
+        transform.GetChild(0).GetComponent<Shadow>().enabled = true;
+
         colorCircle.GetComponent<Image>().enabled = false;
         isPressed = false;
         colorCircle.GetComponent<Image>().enabled = false;
