@@ -48,7 +48,7 @@ public class BoxSelection : MonoBehaviour
             boxColl.offset = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         }
 
-        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier)
+        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier  && !NonSelectableZone.mouseOverZone)
         {
             foreach (Soldier body in FindObjectsOfType<Soldier>())
             {

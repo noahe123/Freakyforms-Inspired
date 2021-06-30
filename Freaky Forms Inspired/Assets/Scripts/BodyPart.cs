@@ -67,8 +67,10 @@ public class BodyPart : MonoBehaviour
             dragOffsetX = mousePos.x - transform.position.x;
             dragOffsetY = mousePos.y - transform.position.y;
 
-           
-            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+            if ( !NonSelectableZone.mouseOverZone)
+            {
+                transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+            }
 
         }
 
@@ -94,6 +96,8 @@ public class BodyPart : MonoBehaviour
         {
             //disable outline pulse
            transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+
+
 
         }
         else

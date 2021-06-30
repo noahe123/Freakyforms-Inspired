@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 
-public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, IPointerEnterHandler
+public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Vector3 offset = new Vector3(4f, -4f, 0);
 
@@ -45,6 +45,15 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
         }
     }
 
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
+        {
+            selectedBodies[currBody] = null;
+        }
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         transform.GetChild(0).GetComponent<Shadow>().enabled = false;
@@ -62,14 +71,28 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
         //various transformations
         if (clone)
             {
-                for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
+                int i = 0;
+                foreach (GameObject body in GameObject.FindGameObjectsWithTag("Body Outline"))
+                {
+                    selectedBodies[i] = body;
+                    i++;
+                }
+
+            for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
                     if (selectedBodies[currBody] == null)
                     {
                         return;
                     }
-                    Instantiate(selectedBodies[currBody].transform.parent.parent.parent, selectedBodies[currBody].transform.parent.parent.parent.position += cloneOffset, Quaternion.identity);
-                }
+                selectedBodies[currBody].transform.parent.parent.parent.GetComponent<BodyPart>().SelectState(false);
+
+                GameObject newObj = Instantiate(selectedBodies[currBody].transform.parent.parent.parent.gameObject, selectedBodies[currBody].transform.parent.parent.parent.position, Quaternion.identity);
+                    newObj.transform.Translate(cloneOffset * (newObj.transform.localScale.x/2));
+
+                //newObj.GetComponent<BodyPart>().SelectState(false);
+
+
+            }
             }
             else if (flip)
             {

@@ -126,6 +126,7 @@ public class Soldier : MonoBehaviour
     {
         mouseOverSoldier = true;
         greatGrandParentBodyPart.GrabBodyPart();
+
     }
 
     // Same here
