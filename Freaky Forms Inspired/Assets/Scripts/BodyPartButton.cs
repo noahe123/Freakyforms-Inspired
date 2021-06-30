@@ -14,10 +14,10 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     private Button myButton;
     public Transform prefab;
     public Vector3 offset = new Vector3(4f, -4f, 0);
-
+    GameObject manager;
     void Start()
     {
-
+        manager = GameObject.FindGameObjectWithTag("Manager");
         transform.Translate(new Vector3(0, 0, -transform.position.z));
         mySprite = transform.GetChild(3).GetComponent<Image>().sprite;
         myButton = GetComponent<Button>();
@@ -59,9 +59,9 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         prefab.GetChild(0).GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = mySprite;
         Vector3 vector = new Vector3(Input.mousePosition.x - Screen.width * .45f, Input.mousePosition.y - Screen.height * .43f, Camera.main.nearClipPlane);
         Transform spawn = Instantiate(prefab, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
+        manager.GetComponent<BodyPartSelectionManager>().numParts++;
 
         spawn.GetComponent<BodyPart>().GrabBodyPart();
-
     }
 
 }

@@ -17,10 +17,13 @@ public class BodyPart : MonoBehaviour
     private Vector2 mousePos;
     public float dragOffsetX, dragOffsetY;
 
+    GameObject transformList;
 
+    GameObject manager;
 
     private void Start()
     {
+        manager = GameObject.FindGameObjectWithTag("Manager");
 
         SelectState(true);
         objectWithSprite = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
@@ -54,14 +57,20 @@ public class BodyPart : MonoBehaviour
 
             if (overTrash == true)
             {
-
+                manager.GetComponent<BodyPartSelectionManager>().numParts--;
+                if (manager.GetComponent<BodyPartSelectionManager>().numParts == 0)
+                {
+                    manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+                }
                 Destroy(gameObject);
+
+
             }
         }
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)));
-            Debug.Log(transform.position);
+           // Debug.Log(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)));
+            //Debug.Log(transform.position);
 
             mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
             dragOffsetX = mousePos.x - transform.position.x;
@@ -70,6 +79,8 @@ public class BodyPart : MonoBehaviour
             if ( !NonSelectableZone.mouseOverZone)
             {
                 transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+                manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+
             }
 
         }
@@ -111,7 +122,10 @@ public class BodyPart : MonoBehaviour
 
     public void ReleaseBodyPart()
     {
-
+        if (!manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
+        {
+            manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(true);
+        }
         dragOffsetX = 0;
         dragOffsetY = 0;
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(-1);
@@ -123,6 +137,14 @@ public class BodyPart : MonoBehaviour
 
     public void GrabBodyPart()
     {
+        if (manager.GetComponent<BodyPartSelectionManager>().transformList != null)
+        {
+            if (manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
+            {
+                manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+            }
+        }
+
         //disable outline pulse
         transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
 

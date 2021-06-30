@@ -23,10 +23,12 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
 
     public float rotAmount;
 
+    GameObject manager;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        manager =  GameObject.FindGameObjectWithTag("Manager");
     }
 
     // Update is called once per frame
@@ -85,6 +87,9 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         return;
                     }
                 selectedBodies[currBody].transform.parent.parent.parent.GetComponent<BodyPart>().SelectState(false);
+
+                //count
+                manager.GetComponent<BodyPartSelectionManager>().numParts++;
 
                 GameObject newObj = Instantiate(selectedBodies[currBody].transform.parent.parent.parent.gameObject, selectedBodies[currBody].transform.parent.parent.parent.position, Quaternion.identity);
                     newObj.transform.Translate(cloneOffset * (newObj.transform.localScale.x/2));

@@ -28,7 +28,7 @@ public class BoxSelection : MonoBehaviour
         // When left mouse button is pressed and mouse pointer is not over any soldier
         // I create four points at mouse position
 
-        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier && !NonSelectableZone.mouseOverZone)
+        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier && !NonSelectableZone.mouseOverZone && !ButtonZone.mouseOverZone)
         {
             lineRend.positionCount = 4;
             //initialMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -48,7 +48,7 @@ public class BoxSelection : MonoBehaviour
             boxColl.offset = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         }
 
-        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier  && !NonSelectableZone.mouseOverZone)
+        if (Input.GetMouseButtonDown(0) && !Soldier.mouseOverSoldier  && !NonSelectableZone.mouseOverZone && !ButtonZone.mouseOverZone)
         {
             foreach (Soldier body in FindObjectsOfType<Soldier>())
             {
@@ -63,7 +63,7 @@ public class BoxSelection : MonoBehaviour
         // mouse initial position when button was pressed for the first time
         // and its current position
 
-        if (Input.GetMouseButton(0) && !Soldier.mouseOverSoldier && !NonSelectableZone.mouseOverZone)
+        if (Input.GetMouseButton(0) && !Soldier.mouseOverSoldier && !NonSelectableZone.mouseOverZone && !ButtonZone.mouseOverZone)
         {
 
 
