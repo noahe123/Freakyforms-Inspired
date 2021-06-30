@@ -73,6 +73,7 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
         //various transformations
         if (clone)
             {
+
                 int i = 0;
                 foreach (GameObject body in GameObject.FindGameObjectsWithTag("Body Outline"))
                 {
@@ -101,24 +102,41 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             }
             else if (flip)
             {
+
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
-                    {
-                        return;
-                    }
-                selectedBodies[currBody].transform.parent.transform.localScale =
-                        new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * -1,
-                        selectedBodies[currBody].transform.parent.transform.localScale.y,
-                        selectedBodies[currBody].transform.parent.transform.localScale.z);
+                if (selectedBodies[currBody] == selectedBodies[0])
+                {
+                    FindObjectOfType<AudioManager>().Play("Shrink");
                 }
+                if (selectedBodies[currBody] == null)
+                    {
+                       
+                         return;
+                    }
+                if (selectedBodies[currBody].transform.parent.parent.transform.rotation.y == 0)
+                {
+                    selectedBodies[currBody].transform.parent.parent.transform.Rotate(new Vector3(0, -180, 0));
+                }
+                else
+                {
+                    selectedBodies[currBody].transform.parent.parent.transform.Rotate(new Vector3(0, 180, 0));
+
+                }
+            }
             }
             else if (stretchX)
             {
-                for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
+              
+            for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
+                if (selectedBodies[currBody] == selectedBodies[0])
+                {
+                    FindObjectOfType<AudioManager>().Play("Grow");
+                }
+                if (selectedBodies[currBody] == null)
                     {
+                       
                         return;
                     }
                 selectedBodies[currBody].transform.parent.transform.localScale =
@@ -131,8 +149,13 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             {
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
+                if (selectedBodies[currBody] == selectedBodies[0])
+                {
+                    FindObjectOfType<AudioManager>().Play("Shrink");
+                }
+                if (selectedBodies[currBody] == null)
                     {
+                      
                         return;
                     }
 
@@ -146,8 +169,13 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             {
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
+                if (selectedBodies[currBody] == selectedBodies[0])
+                {
+                    FindObjectOfType<AudioManager>().Play("Grow");
+                }
+                if (selectedBodies[currBody] == null)
                     {
+                        
                         return;
                     }
                 selectedBodies[currBody].transform.parent.transform.localScale =
@@ -160,8 +188,13 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             {
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
+                if (selectedBodies[currBody] == selectedBodies[0])
+                {
+                    FindObjectOfType<AudioManager>().Play("Shrink");
+                }
+                if (selectedBodies[currBody] == null)
                     {
+                      
                         return;
                     }
                 selectedBodies[currBody].transform.parent.transform.localScale =
@@ -174,8 +207,13 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             {
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
+                if (selectedBodies[currBody] == selectedBodies[0])
+                {
+                    FindObjectOfType<AudioManager>().Play("Grow");
+                }
+                if (selectedBodies[currBody] == null)
                     {
+                        
                         return;
                     }
                     selectedBodies[currBody].transform.parent.transform.localScale *= scaleFactor;
@@ -185,8 +223,13 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             {
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
+                    if (selectedBodies[currBody] == selectedBodies[0])
                     {
+                        FindObjectOfType<AudioManager>().Play("Shrink");
+                    }
+                if (selectedBodies[currBody] == null)
+                    {
+                    
                         return;
                     }
                     selectedBodies[currBody].transform.parent.transform.localScale *= 1 / scaleFactor;
@@ -196,22 +239,32 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             {
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
+                    if (selectedBodies[currBody] == selectedBodies[0])
                     {
+                        FindObjectOfType<AudioManager>().Play("Shrink");
+                    }
+                if (selectedBodies[currBody] == null)
+                    {
+                      
                         return;
                     }
-                    selectedBodies[currBody].transform.parent.transform.Rotate(new Vector3(0, 0, -rotAmount));
+                    selectedBodies[currBody].transform.parent.transform.Rotate(new Vector3(0, 0, -rotAmount * Mathf.Sign(selectedBodies[currBody].transform.parent.parent.transform.rotation.y)));
                 }
              }
             else if (rotateCW)
             {
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
                 {
-                    if (selectedBodies[currBody] == null)
+                    if (selectedBodies[currBody] == selectedBodies[0])
                     {
+                        FindObjectOfType<AudioManager>().Play("Grow");
+                    }
+                if (selectedBodies[currBody] == null)
+                    {
+                        
                         return;
                     }
-                    selectedBodies[currBody].transform.parent.transform.Rotate(new Vector3(0, 0, rotAmount));
+                    selectedBodies[currBody].transform.parent.transform.Rotate(new Vector3(0, 0, rotAmount * Mathf.Sign(selectedBodies[currBody].transform.parent.parent.transform.rotation.y)));
                 }
             }
 

@@ -62,6 +62,8 @@ public class BodyPart : MonoBehaviour
                 {
                     manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
                 }
+                FindObjectOfType<AudioManager>().Play("Trash");
+
                 Destroy(gameObject);
 
 
@@ -122,6 +124,8 @@ public class BodyPart : MonoBehaviour
 
     public void ReleaseBodyPart()
     {
+        FindObjectOfType<AudioManager>().Play("Release");
+
         if (!manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
         {
             manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(true);
@@ -137,6 +141,8 @@ public class BodyPart : MonoBehaviour
 
     public void GrabBodyPart()
     {
+        FindObjectOfType<AudioManager>().Play("Grab");
+
         if (manager.GetComponent<BodyPartSelectionManager>().transformList != null)
         {
             if (manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)

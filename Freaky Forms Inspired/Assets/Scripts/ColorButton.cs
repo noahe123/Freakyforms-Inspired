@@ -29,6 +29,8 @@ public class ColorButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     //OnPointerDown is also required to receive OnPointerUp callbacks
     public void OnPointerDown(PointerEventData eventData)
     {
+        FindObjectOfType<AudioManager>().Play("Paint Select");
+
         transform.GetChild(0).GetComponent<Shadow>().enabled = false;
         transform.position += offset;
         isPressed = true;
@@ -56,6 +58,8 @@ public class ColorButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
             {
                 if (hit.collider.gameObject.transform.parent.GetChild(1).gameObject.activeInHierarchy)
                 {
+                    FindObjectOfType<AudioManager>().Play("Paint");
+
                     hit.collider.gameObject.transform.parent.parent.gameObject.GetComponent<SpriteRenderer>().color = myColor;
                 }
 
