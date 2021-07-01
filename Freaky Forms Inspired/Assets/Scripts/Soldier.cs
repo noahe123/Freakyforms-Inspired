@@ -101,9 +101,11 @@ public class Soldier : MonoBehaviour
 
         //Pretty obvious piece of code I guess :-) If it's not just let me know.
 
+
         if (soldierSelected && dragSelectedSoldiersAllowed)
         {
             // transform.parent.parent.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
+            //7-1
             transform.parent.parent.parent.GetComponent<BodyPart>().MoveBodyPart();
 
         }
@@ -125,8 +127,9 @@ public class Soldier : MonoBehaviour
     private void OnMouseDown()
     {
         mouseOverSoldier = true;
-        greatGrandParentBodyPart.GrabBodyPart();
-
+        //7-1
+        //greatGrandParentBodyPart.GrabBodyPart();
+        FindObjectOfType<BodyPartSelectionManager>().GetObjectOnTop().GetComponent<BodyPart>().GrabBodyPart();
     }
 
     // Same here

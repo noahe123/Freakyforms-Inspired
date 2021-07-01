@@ -67,7 +67,6 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         //sorting layer
         spawn.gameObject.GetComponent<SortingGroup>().sortingOrder = manager.GetComponent<BodyPartSelectionManager>().numParts*50 - manager.GetComponent<BodyPartSelectionManager>().numParts;
 
-
         spawn.GetComponent<BodyPart>().GrabBodyPart();
     }
 

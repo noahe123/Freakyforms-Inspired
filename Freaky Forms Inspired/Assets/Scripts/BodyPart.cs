@@ -97,6 +97,7 @@ public class BodyPart : MonoBehaviour
     {
         if (!releasedBodyPart && selected)
         {
+            //7-1
             MoveBodyPart();
         }
     }
@@ -147,6 +148,11 @@ public class BodyPart : MonoBehaviour
 
     public void GrabBodyPart()
     {
+        /*
+        if (manager.GetComponent<BodyPartSelectionManager>().GetObjectOnTop() != gameObject)
+        {
+            return;
+        }*/
         FindObjectOfType<AudioManager>().Play("Grab");
 
         if (manager != null)
@@ -166,7 +172,8 @@ public class BodyPart : MonoBehaviour
         SelectState(true);
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
         releasedBodyPart = false;
-    }
+        
+}
 
     
     public void MoveBodyPart()

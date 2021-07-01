@@ -102,6 +102,7 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
 
                 FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(newObj.transform);
 
+                newObj.GetComponent<SortingGroup>().sortingOrder = manager.GetComponent<BodyPartSelectionManager>().numParts * 50 - manager.GetComponent<BodyPartSelectionManager>().numParts;
 
             }
         }
