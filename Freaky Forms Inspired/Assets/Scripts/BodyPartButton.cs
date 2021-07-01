@@ -60,6 +60,8 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         Vector3 vector = new Vector3(Input.mousePosition.x - Screen.width * .45f, Input.mousePosition.y - Screen.height * .43f, Camera.main.nearClipPlane);
         Transform spawn = Instantiate(prefab, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
         manager.GetComponent<BodyPartSelectionManager>().numParts++;
+        FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn);
+        FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
 
         spawn.GetComponent<BodyPart>().GrabBodyPart();
     }

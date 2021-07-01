@@ -19,11 +19,13 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
     public Vector3 cloneOffset;
 
     [SerializeField]
-    float scaleFactor;
+    float scaleFactor, outlineScaleFactor;
 
     public float rotAmount;
 
     GameObject manager;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -92,14 +94,16 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                 //count
                 manager.GetComponent<BodyPartSelectionManager>().numParts++;
 
+
                 GameObject newObj = Instantiate(selectedBodies[currBody].transform.parent.parent.parent.gameObject, selectedBodies[currBody].transform.parent.parent.parent.position, Quaternion.identity);
                     newObj.transform.Translate(cloneOffset * (newObj.transform.localScale.x/2));
 
                 //newObj.GetComponent<BodyPart>().SelectState(false);
+                FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(newObj.transform.parent.parent.parent);
 
 
             }
-            }
+        }
             else if (flip)
             {
 
@@ -143,7 +147,13 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * scaleFactor,
                         selectedBodies[currBody].transform.parent.transform.localScale.y,
                         selectedBodies[currBody].transform.parent.transform.localScale.z);
-                }
+
+                selectedBodies[currBody].transform.parent.transform.localScale =
+                      new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (-outlineScaleFactor + (scaleFactor)),
+                      selectedBodies[currBody].transform.parent.transform.localScale.y,
+                      selectedBodies[currBody].transform.parent.transform.localScale.z);
+
+            }
             }
             else if (squashX)
             {
@@ -163,7 +173,12 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (1 / scaleFactor),
                         selectedBodies[currBody].transform.parent.transform.localScale.y,
                         selectedBodies[currBody].transform.parent.transform.localScale.z);
-                }
+
+                selectedBodies[currBody].transform.parent.transform.localScale =
+                       new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (1 / (-outlineScaleFactor + scaleFactor)),
+                       selectedBodies[currBody].transform.parent.transform.localScale.y,
+                       selectedBodies[currBody].transform.parent.transform.localScale.z);
+            }
             }
             else if (stretchY)
             {
@@ -182,7 +197,12 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x,
                         selectedBodies[currBody].transform.parent.transform.localScale.y * scaleFactor,
                         selectedBodies[currBody].transform.parent.transform.localScale.z);
-                }
+
+                selectedBodies[currBody].transform.localScale =
+                        new Vector3(selectedBodies[currBody].transform.localScale.x,
+                        selectedBodies[currBody].transform.localScale.y * ((scaleFactor - outlineScaleFactor)),
+                        selectedBodies[currBody].transform.localScale.z);
+            }
             }
             else if (squashY)
             {
@@ -201,7 +221,12 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x,
                         selectedBodies[currBody].transform.parent.transform.localScale.y * (1 / scaleFactor),
                         selectedBodies[currBody].transform.parent.transform.localScale.z);
-                }
+
+                selectedBodies[currBody].transform.localScale =
+                        new Vector3(selectedBodies[currBody].transform.localScale.x,
+                        selectedBodies[currBody].transform.localScale.y * (1 / (scaleFactor-outlineScaleFactor)),
+                        selectedBodies[currBody].transform.localScale.z);
+            }
             }
             else if (expand)
             {
@@ -217,8 +242,10 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         return;
                     }
                     selectedBodies[currBody].transform.parent.transform.localScale *= scaleFactor;
-                }
+
+                    selectedBodies[currBody].transform.localScale *= (scaleFactor-outlineScaleFactor);
             }
+        }
             else if (shrink)
             {
                 for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
@@ -233,7 +260,9 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         return;
                     }
                     selectedBodies[currBody].transform.parent.transform.localScale *= 1 / scaleFactor;
-                }
+
+                    selectedBodies[currBody].transform.localScale *= 1/(scaleFactor - outlineScaleFactor);
+            }
             }
             else if (rotateCCW)
             {

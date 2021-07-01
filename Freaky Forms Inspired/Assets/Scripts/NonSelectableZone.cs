@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using TMPro;
 
-public class NonSelectableZone : MonoBehaviour
+public class NonSelectableZone : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     //private SpriteRenderer sprRenderer;
 
@@ -31,14 +34,14 @@ public class NonSelectableZone : MonoBehaviour
 
     // No need to explain I hope
 
-    private void OnMouseDown()
+    public void OnPointerDown(PointerEventData eventData)
     {
         mouseOverZone = true;
     }
 
     // Same here
 
-    private void OnMouseUp()
+    public void OnPointerUp(PointerEventData eventData)
     {
         mouseOverZone = false;
 

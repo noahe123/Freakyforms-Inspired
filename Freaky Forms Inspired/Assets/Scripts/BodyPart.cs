@@ -63,6 +63,7 @@ public class BodyPart : MonoBehaviour
                     manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
                 }
                 FindObjectOfType<AudioManager>().Play("Trash");
+                FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Remove(transform);
 
                 Destroy(gameObject);
 
