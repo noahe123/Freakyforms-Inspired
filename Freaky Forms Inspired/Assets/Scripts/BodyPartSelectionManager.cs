@@ -2,19 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using TMPro;
 
 public class BodyPartSelectionManager : MonoBehaviour
 {
     public GameObject selectedBodyPart;
 
     public GameObject transformList;
+    //public GameObject colorsList;
+
 
     public int numParts;
 
+    public int maxParts;
+
+    public int remainingParts;
+
+    public GameObject partsCounter;
+
+
     private void Start()
     {
+
+        partsCounter = GameObject.Find("Parts Counter");
         transformList = GameObject.Find("TransformList");
+        //colorsList = GameObject.Find("ColorsList");
+
         transformList.SetActive(false);
+        //colorsList.SetActive(false);
+
+        DisplayParts();
+
+
     }
 
     private void OnMouseUp()
@@ -45,6 +64,34 @@ public class BodyPartSelectionManager : MonoBehaviour
         }
         return selected;
     }
+
+    public void DisplayParts()
+    {
+        remainingParts = maxParts - numParts;
+        if (remainingParts <= 0)
+        {
+            partsCounter.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.black;
+            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = Color.black;
+            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "left.";
+
+        }
+        else if (remainingParts <= 3)
+        {
+            partsCounter.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.red;
+            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = Color.red;
+            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "left!";
+
+        }
+        else
+        {
+            partsCounter.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color(0/255, ((float)140 / (float)255), 255/255, 1);
+            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(0 / 255, ((float)140 / (float)255), 255 / 255, 1);
+            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "left.";
+
+        }
+        partsCounter.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "" + (maxParts - numParts);
+    }
+
     /*
 // Start is called before the first frame update
 private void Update()

@@ -26,7 +26,6 @@ public class ButtonBodyPartUI : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         {
             transform.parent.GetChild(0).gameObject.GetComponent<BodyPartUI>().MoveUIRight();
         }
-        GameObject.FindObjectOfType<AudioManager>().Play("Pizzicato");
     }
 
     public void OnPointerUp(PointerEventData data)

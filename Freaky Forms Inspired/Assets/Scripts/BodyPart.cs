@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using TMPro;
+
 
 public class BodyPart : MonoBehaviour
 {
@@ -21,10 +24,22 @@ public class BodyPart : MonoBehaviour
 
     GameObject manager;
 
+    GameObject scaleObj;
+
+    Vector3 initialScale, minScale, maxScale;
+
     private void Start()
     {
+        scaleObj = transform.GetChild(0).GetChild(0).gameObject;
+
+        initialScale = transform.GetChild(0).GetChild(0).transform.localScale;
+
+        minScale = initialScale / 3;
+        maxScale = initialScale * 3;
+
         manager = GameObject.FindGameObjectWithTag("Manager");
 
+        Debug.Log(initialScale);
         SelectState(true);
         objectWithSprite = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
         polygonCollider2D = objectWithSprite.GetComponent<PolygonCollider2D>();
@@ -58,9 +73,12 @@ public class BodyPart : MonoBehaviour
             if (overTrash == true)
             {
                 manager.GetComponent<BodyPartSelectionManager>().numParts--;
+                manager.GetComponent<BodyPartSelectionManager>().DisplayParts();
                 if (manager.GetComponent<BodyPartSelectionManager>().numParts == 0)
                 {
                     manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+                    //manager.GetComponent<BodyPartSelectionManager>().colorsList.SetActive(false);
+
                 }
                 FindObjectOfType<AudioManager>().Play("Trash");
                 FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Remove(transform);
@@ -68,6 +86,49 @@ public class BodyPart : MonoBehaviour
                 Destroy(gameObject);
 
 
+            }
+
+            if (NonSelectableZone.mouseEnterZone)
+            {
+                Debug.Log(scaleObj.transform.localScale);
+                if (gameObject.GetComponent<SortingGroup>().sortingOrder > 5000)
+                {
+                    gameObject.GetComponent<SortingGroup>().sortingOrder = 5000;
+                }
+                else if (gameObject.GetComponent<SortingGroup>().sortingOrder < -5000)
+                {
+                    gameObject.GetComponent<SortingGroup>().sortingOrder = -5000;
+
+                }
+                if (scaleObj.transform.localScale.y > maxScale.y)
+                {
+                    
+                    scaleObj.transform.localScale = 
+                        new Vector3(scaleObj.transform.localScale.x, 
+                        maxScale.y, 
+                        scaleObj.transform.localScale.z);
+                }
+                else if (scaleObj.transform.localScale.y < minScale.y)
+                {
+                    scaleObj.transform.localScale =
+                        new Vector3(scaleObj.transform.localScale.x,
+                        minScale.y,
+                        scaleObj.transform.localScale.z);
+                }
+                if (scaleObj.transform.localScale.x > maxScale.x)
+                {
+                    scaleObj.transform.localScale =
+                        new Vector3(maxScale.x, 
+                        scaleObj.transform.localScale.y,
+                        scaleObj.transform.localScale.z);
+                }
+                else if (scaleObj.transform.localScale.x < minScale.x)
+                {
+                    scaleObj.transform.localScale =
+                        new Vector3(minScale.x,
+                        scaleObj.transform.localScale.y,
+                        scaleObj.transform.localScale.z);
+                }
             }
         }
         if (Input.GetMouseButtonDown(0))
@@ -83,6 +144,13 @@ public class BodyPart : MonoBehaviour
             {
                 transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
                 manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+
+                /*
+                if (!ButtonZone.mouseOverZone)
+                {
+                    manager.GetComponent<BodyPartSelectionManager>().colorsList.SetActive(false);
+                }*/
+
 
             }
 
@@ -135,6 +203,8 @@ public class BodyPart : MonoBehaviour
             if (!manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
             {
                 manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(true);
+                //manager.GetComponent<BodyPartSelectionManager>().colorsList.SetActive(true);
+
             }
         }
         dragOffsetX = 0;
@@ -162,6 +232,7 @@ public class BodyPart : MonoBehaviour
                 if (manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
                 {
                     manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+                    //manager.GetComponent<BodyPartSelectionManager>().colorsList.SetActive(false);
                 }
             }
         }

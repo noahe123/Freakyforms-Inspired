@@ -15,6 +15,12 @@ public class BodyPartUI : MonoBehaviour
         if ((transform.GetChild(0).GetComponent<RectTransform>().localPosition.x + incrementValue*-5) > (transform.GetChild(0).childCount * -incrementValue))
         {
             transform.GetChild(0).GetComponent<RectTransform>().localPosition += new Vector3(-incrementValue, 0, 0);
+            FindObjectOfType<AudioManager>().Play("Pizzicato");
+
+        }
+        else
+        {
+            FindObjectOfType<AudioManager>().Play("Incorrect");
         }
     }
     public void MoveUIRight()
@@ -22,6 +28,12 @@ public class BodyPartUI : MonoBehaviour
         if (transform.GetChild(0).GetComponent<RectTransform>().localPosition.x < -(incrementValue*5 + 1))  
         {
             transform.GetChild(0).GetComponent<RectTransform>().localPosition += new Vector3(incrementValue, 0, 0);
+            FindObjectOfType<AudioManager>().Play("Pizzicato");
+
+        }
+        else
+        {
+            FindObjectOfType<AudioManager>().Play("Incorrect");
         }
     }
 }

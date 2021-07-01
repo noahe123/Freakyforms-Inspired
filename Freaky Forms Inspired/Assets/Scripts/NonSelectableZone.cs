@@ -5,13 +5,16 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class NonSelectableZone : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class NonSelectableZone : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler
 {
     //private SpriteRenderer sprRenderer;
 
 
 
     public static bool mouseOverZone;
+
+    public static bool mouseEnterZone;
+
 
     private Vector2 mousePos;
 
@@ -46,5 +49,19 @@ public class NonSelectableZone : MonoBehaviour, IPointerDownHandler, IPointerUpH
         mouseOverZone = false;
 
     }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        mouseEnterZone = true;
+    }
+
+    // Same here
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        mouseEnterZone = false;
+
+    }
+
 
 }

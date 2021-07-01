@@ -16,8 +16,11 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     public Transform prefab;
     public Vector3 offset = new Vector3(4f, -4f, 0);
     GameObject manager;
+    GameObject player;
+
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
         manager = GameObject.FindGameObjectWithTag("Manager");
         transform.Translate(new Vector3(0, 0, -transform.position.z));
         mySprite = transform.GetChild(3).GetComponent<Image>().sprite;
@@ -27,15 +30,15 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         //set text
         if (mySprite.name.Contains("head"))
         {
-            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "Head";
+            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "head";
         }
         else if (mySprite.name.Contains("body"))
         {
-            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "Body";
+            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "body";
         }
         else if (mySprite.name.Contains("mouth"))
         {
-            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "Mouth";
+            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "mouth";
         }
     }
 
@@ -43,8 +46,10 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     {
         GetComponent<Shadow>().enabled = false;
         transform.position += offset;
-
-        InstantiateBodyPart();
+        if (manager.GetComponent<BodyPartSelectionManager>().numParts < manager.GetComponent<BodyPartSelectionManager>().maxParts)
+        {
+            InstantiateBodyPart();
+        }
     }
 
     public void OnPointerUp(PointerEventData data)
@@ -58,11 +63,20 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         prefab.GetChild(0).GetChild(0).GetComponent<SpriteMask>().sprite = mySprite;
         prefab.GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = mySprite;
         prefab.GetChild(0).GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = mySprite;
+
+
         Vector3 vector = new Vector3(Input.mousePosition.x - Screen.width * .45f, Input.mousePosition.y - Screen.height * .43f, Camera.main.nearClipPlane);
-        Transform spawn = Instantiate(prefab, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
         manager.GetComponent<BodyPartSelectionManager>().numParts++;
+        manager.GetComponent<BodyPartSelectionManager>().DisplayParts();
+
+        //BODY
+
+        Transform spawn = Instantiate(prefab, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
         FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn);
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
+
+        //make child of player
+        spawn.transform.parent = player.transform;
 
         //sorting layer
         spawn.gameObject.GetComponent<SortingGroup>().sortingOrder = manager.GetComponent<BodyPartSelectionManager>().numParts*50 - manager.GetComponent<BodyPartSelectionManager>().numParts;
