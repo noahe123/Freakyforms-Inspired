@@ -24,14 +24,24 @@ public class BodyPartChildDetect : MonoBehaviour
 
     }
 
-    private void OnMouseEnter()
+    private void OnMouseOver()
     {
         if (colorCircle.GetComponent<Image>().enabled == true)
         {
-            transform.parent.GetChild(1).gameObject.SetActive(true);
+            Vector3 lastMousePosition = Vector3.zero;
+            if (Input.mousePosition != lastMousePosition)
+            {
+                lastMousePosition = Input.mousePosition;
+                foreach (BodyPart body in FindObjectsOfType<BodyPart>())
+                {
+                    body.transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
+                }
+                FindObjectOfType<BodyPartSelectionManager>().GetObjectOnTop().transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
+            }
         }
     }
 
+    
     private void OnMouseExit()
     {
         if (colorCircle.GetComponent<Image>().enabled == true)

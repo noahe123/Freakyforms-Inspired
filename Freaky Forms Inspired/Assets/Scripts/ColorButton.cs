@@ -58,9 +58,11 @@ public class ColorButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
             {
                 if (hit.collider.gameObject.transform.parent.GetChild(1).gameObject.activeInHierarchy)
                 {
-                    FindObjectOfType<AudioManager>().Play("Paint");
+                 
+                        FindObjectOfType<AudioManager>().Play("Paint");
 
-                    hit.collider.gameObject.transform.parent.parent.gameObject.GetComponent<SpriteRenderer>().color = myColor;
+                        hit.collider.gameObject.transform.parent.parent.gameObject.GetComponent<SpriteRenderer>().color = myColor;
+                    
                 }
 
             }

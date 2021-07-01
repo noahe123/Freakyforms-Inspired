@@ -32,11 +32,14 @@ public class BodyPartSelectionManager : MonoBehaviour
         GameObject selected = null;
         foreach (RaycastHit2D hit in hits)
         {
-            int myLayer = hit.transform.parent.parent.parent.GetComponent<SortingGroup>().sortingOrder;
-            if (myLayer > maxLayer)
+            if (hit.transform.parent.parent.parent.GetComponent<SortingGroup>() != null)
             {
-                maxLayer = myLayer;
-                selected = hit.transform.parent.parent.parent.gameObject;
+                int myLayer = hit.transform.parent.parent.parent.GetComponent<SortingGroup>().sortingOrder;
+                if (myLayer > maxLayer)
+                {
+                    maxLayer = myLayer;
+                    selected = hit.transform.parent.parent.parent.gameObject;
+                }
             }
             //Debug.Log(hit.transform.name);
         }
