@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-
+using UnityEngine.Rendering;
 
 public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Vector3 offset = new Vector3(4f, -4f, 0);
 
     [SerializeField]
-    private bool clone, flip, stretchX, squashX, stretchY, squashY, expand, shrink, rotateCW, rotateCCW;
+    private bool clone, flip, stretchX, squashX, stretchY, squashY, expand, shrink, rotateCW, rotateCCW, layerUp, layerDown;
 
     [SerializeField]
     GameObject[] selectedBodies = new GameObject[50];
@@ -99,7 +99,8 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                     newObj.transform.Translate(cloneOffset * (newObj.transform.localScale.x/2));
 
                 //newObj.GetComponent<BodyPart>().SelectState(false);
-                FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(newObj.transform.parent.parent.parent);
+
+                FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(newObj.transform);
 
 
             }
@@ -118,13 +119,16 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                        
                          return;
                     }
+
                 if (selectedBodies[currBody].transform.parent.parent.transform.rotation.y == 0)
                 {
-                    selectedBodies[currBody].transform.parent.parent.transform.Rotate(new Vector3(0, -180, 0));
+
+                        selectedBodies[currBody].transform.parent.parent.transform.Rotate(new Vector3(0, -180, 0));
                 }
                 else
                 {
-                    selectedBodies[currBody].transform.parent.parent.transform.Rotate(new Vector3(0, 180, 0));
+
+                        selectedBodies[currBody].transform.parent.parent.transform.Rotate(new Vector3(0, 180, 0));
 
                 }
             }
@@ -142,16 +146,33 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                     {
                        
                         return;
-                    }
-                selectedBodies[currBody].transform.parent.transform.localScale =
-                        new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * scaleFactor,
-                        selectedBodies[currBody].transform.parent.transform.localScale.y,
-                        selectedBodies[currBody].transform.parent.transform.localScale.z);
+                }
+                bool stretchCondition = (((selectedBodies[currBody].transform.parent.localRotation.z * 180 < -45 && selectedBodies[currBody].transform.parent.localRotation.z * 180 >= -135) || (selectedBodies[currBody].transform.parent.localRotation.z * 180 > 45 && selectedBodies[currBody].transform.parent.localRotation.z * 180 <= 135)));
 
-                selectedBodies[currBody].transform.parent.transform.localScale =
-                      new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (-outlineScaleFactor + (scaleFactor)),
-                      selectedBodies[currBody].transform.parent.transform.localScale.y,
+                if (!stretchCondition)
+                {
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                            new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * scaleFactor,
+                            selectedBodies[currBody].transform.parent.transform.localScale.y,
+                            selectedBodies[currBody].transform.parent.transform.localScale.z);
+
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                          new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (-outlineScaleFactor + (scaleFactor)),
+                          selectedBodies[currBody].transform.parent.transform.localScale.y,
+                          selectedBodies[currBody].transform.parent.transform.localScale.z);
+                }
+                else
+                {
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                      new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x,
+                      selectedBodies[currBody].transform.parent.transform.localScale.y * scaleFactor,
                       selectedBodies[currBody].transform.parent.transform.localScale.z);
+
+                    selectedBodies[currBody].transform.localScale =
+                            new Vector3(selectedBodies[currBody].transform.localScale.x,
+                            selectedBodies[currBody].transform.localScale.y * ((scaleFactor - outlineScaleFactor)),
+                            selectedBodies[currBody].transform.localScale.z);
+                }
 
             }
             }
@@ -169,15 +190,33 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         return;
                     }
 
-                selectedBodies[currBody].transform.parent.transform.localScale =
+                bool stretchCondition = (((selectedBodies[currBody].transform.parent.localRotation.z*180 < -45 && selectedBodies[currBody].transform.parent.localRotation.z * 180 >= -135) || (selectedBodies[currBody].transform.parent.localRotation.z * 180 > 45 && selectedBodies[currBody].transform.parent.localRotation.z * 180 <= 135)));
+
+               // Debug.Log(selectedBodies[currBody].transform.parent.rotation.z);
+                if (!stretchCondition)
+                {
+                    selectedBodies[currBody].transform.parent.transform.localScale =
                         new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (1 / scaleFactor),
                         selectedBodies[currBody].transform.parent.transform.localScale.y,
                         selectedBodies[currBody].transform.parent.transform.localScale.z);
 
-                selectedBodies[currBody].transform.parent.transform.localScale =
-                       new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (1 / (-outlineScaleFactor + scaleFactor)),
-                       selectedBodies[currBody].transform.parent.transform.localScale.y,
-                       selectedBodies[currBody].transform.parent.transform.localScale.z);
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                           new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (1 / (-outlineScaleFactor + scaleFactor)),
+                           selectedBodies[currBody].transform.parent.transform.localScale.y,
+                           selectedBodies[currBody].transform.parent.transform.localScale.z);
+                }
+                else
+                {
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                      new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x,
+                      selectedBodies[currBody].transform.parent.transform.localScale.y * (1 / scaleFactor),
+                      selectedBodies[currBody].transform.parent.transform.localScale.z);
+
+                    selectedBodies[currBody].transform.localScale =
+                            new Vector3(selectedBodies[currBody].transform.localScale.x,
+                            selectedBodies[currBody].transform.localScale.y * (1 / (scaleFactor - outlineScaleFactor)),
+                            selectedBodies[currBody].transform.localScale.z);
+                }
             }
             }
             else if (stretchY)
@@ -193,15 +232,32 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                         
                         return;
                     }
-                selectedBodies[currBody].transform.parent.transform.localScale =
-                        new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x,
-                        selectedBodies[currBody].transform.parent.transform.localScale.y * scaleFactor,
-                        selectedBodies[currBody].transform.parent.transform.localScale.z);
+                bool stretchCondition = (((selectedBodies[currBody].transform.parent.localRotation.z * 180 < -45 && selectedBodies[currBody].transform.parent.localRotation.z * 180 >= -135) || (selectedBodies[currBody].transform.parent.localRotation.z * 180 > 45 && selectedBodies[currBody].transform.parent.localRotation.z * 180 <= 135)));
 
-                selectedBodies[currBody].transform.localScale =
-                        new Vector3(selectedBodies[currBody].transform.localScale.x,
-                        selectedBodies[currBody].transform.localScale.y * ((scaleFactor - outlineScaleFactor)),
-                        selectedBodies[currBody].transform.localScale.z);
+                if (stretchCondition)
+                {
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                            new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * scaleFactor,
+                            selectedBodies[currBody].transform.parent.transform.localScale.y,
+                            selectedBodies[currBody].transform.parent.transform.localScale.z);
+
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                          new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (-outlineScaleFactor + (scaleFactor)),
+                          selectedBodies[currBody].transform.parent.transform.localScale.y,
+                          selectedBodies[currBody].transform.parent.transform.localScale.z);
+                }
+                else
+                {
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                      new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x,
+                      selectedBodies[currBody].transform.parent.transform.localScale.y * scaleFactor,
+                      selectedBodies[currBody].transform.parent.transform.localScale.z);
+
+                    selectedBodies[currBody].transform.localScale =
+                            new Vector3(selectedBodies[currBody].transform.localScale.x,
+                            selectedBodies[currBody].transform.localScale.y * ((scaleFactor - outlineScaleFactor)),
+                            selectedBodies[currBody].transform.localScale.z);
+                }
             }
             }
             else if (squashY)
@@ -217,15 +273,32 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                       
                         return;
                     }
-                selectedBodies[currBody].transform.parent.transform.localScale =
-                        new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x,
-                        selectedBodies[currBody].transform.parent.transform.localScale.y * (1 / scaleFactor),
+                bool stretchCondition = (((selectedBodies[currBody].transform.parent.localRotation.z * 180 < -45 && selectedBodies[currBody].transform.parent.localRotation.z * 180 >= -135) || (selectedBodies[currBody].transform.parent.localRotation.z * 180 > 45 && selectedBodies[currBody].transform.parent.localRotation.z * 180 <= 135)));
+
+                if (stretchCondition)
+                {
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                        new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (1 / scaleFactor),
+                        selectedBodies[currBody].transform.parent.transform.localScale.y,
                         selectedBodies[currBody].transform.parent.transform.localScale.z);
 
-                selectedBodies[currBody].transform.localScale =
-                        new Vector3(selectedBodies[currBody].transform.localScale.x,
-                        selectedBodies[currBody].transform.localScale.y * (1 / (scaleFactor-outlineScaleFactor)),
-                        selectedBodies[currBody].transform.localScale.z);
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                           new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x * (1 / (-outlineScaleFactor + scaleFactor)),
+                           selectedBodies[currBody].transform.parent.transform.localScale.y,
+                           selectedBodies[currBody].transform.parent.transform.localScale.z);
+                }
+                else
+                {
+                    selectedBodies[currBody].transform.parent.transform.localScale =
+                      new Vector3(selectedBodies[currBody].transform.parent.transform.localScale.x,
+                      selectedBodies[currBody].transform.parent.transform.localScale.y * (1 / scaleFactor),
+                      selectedBodies[currBody].transform.parent.transform.localScale.z);
+
+                    selectedBodies[currBody].transform.localScale =
+                            new Vector3(selectedBodies[currBody].transform.localScale.x,
+                            selectedBodies[currBody].transform.localScale.y * (1 / (scaleFactor - outlineScaleFactor)),
+                            selectedBodies[currBody].transform.localScale.z);
+                }
             }
             }
             else if (expand)
@@ -296,6 +369,38 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
                     selectedBodies[currBody].transform.parent.transform.Rotate(new Vector3(0, 0, rotAmount * Mathf.Sign(selectedBodies[currBody].transform.parent.parent.transform.rotation.y)));
                 }
             }
+        else if (layerUp)
+        {
+            for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
+            {
+                if (selectedBodies[currBody] == selectedBodies[0])
+                {
+                    FindObjectOfType<AudioManager>().Play("Grow");
+                }
+                if (selectedBodies[currBody] == null)
+                {
+
+                    return;
+                }
+                selectedBodies[currBody].transform.parent.parent.parent.gameObject.GetComponent<SortingGroup>().sortingOrder+= 50;
+            }
+        }
+        else if (layerDown)
+        {
+            for (int currBody = 0; currBody < selectedBodies.Length; currBody++)
+            {
+                if (selectedBodies[currBody] == selectedBodies[0])
+                {
+                    FindObjectOfType<AudioManager>().Play("Shrink");
+                }
+                if (selectedBodies[currBody] == null)
+                {
+
+                    return;
+                }
+                selectedBodies[currBody].transform.parent.parent.parent.gameObject.GetComponent<SortingGroup>().sortingOrder-= 50;
+            }
+        }
 
     }
 }

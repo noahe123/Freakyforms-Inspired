@@ -125,11 +125,16 @@ public class BodyPart : MonoBehaviour
 
     public void ReleaseBodyPart()
     {
+
+
         FindObjectOfType<AudioManager>().Play("Release");
 
-        if (!manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
+        if (manager.GetComponent<BodyPartSelectionManager>().transformList != null)
         {
-            manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(true);
+            if (!manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
+            {
+                manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(true);
+            }
         }
         dragOffsetX = 0;
         dragOffsetY = 0;
@@ -144,11 +149,14 @@ public class BodyPart : MonoBehaviour
     {
         FindObjectOfType<AudioManager>().Play("Grab");
 
-        if (manager.GetComponent<BodyPartSelectionManager>().transformList != null)
+        if (manager != null)
         {
-            if (manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
+            if (manager.GetComponent<BodyPartSelectionManager>().transformList != null)
             {
-                manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+                if (manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
+                {
+                    manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+                }
             }
         }
 

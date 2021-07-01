@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.Rendering;
 
 
 
@@ -62,6 +63,10 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         manager.GetComponent<BodyPartSelectionManager>().numParts++;
         FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn);
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
+
+        //sorting layer
+        spawn.gameObject.GetComponent<SortingGroup>().sortingOrder = manager.GetComponent<BodyPartSelectionManager>().numParts*50 - manager.GetComponent<BodyPartSelectionManager>().numParts;
+
 
         spawn.GetComponent<BodyPart>().GrabBodyPart();
     }

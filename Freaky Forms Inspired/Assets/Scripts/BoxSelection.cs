@@ -66,10 +66,11 @@ public class BoxSelection : MonoBehaviour
         if (Input.GetMouseButton(0) && !Soldier.mouseOverSoldier && !NonSelectableZone.mouseOverZone && !ButtonZone.mouseOverZone)
         {
 
-
-            //currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //new line*****
-            currentMousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
+            if (boxColl != null)
+            {
+                //currentMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                //new line*****
+                currentMousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
             //******
             lineRend.SetPosition(0, new Vector2(initialMousePosition.x, initialMousePosition.y));
             lineRend.SetPosition(1, new Vector2(initialMousePosition.x, currentMousePosition.y));
@@ -82,9 +83,11 @@ public class BoxSelection : MonoBehaviour
 
             // Box collider boundaries outline that box drawn
 
-            boxColl.size = new Vector2(
-            Mathf.Abs(initialMousePosition.x - currentMousePosition.x),
-            Mathf.Abs(initialMousePosition.y - currentMousePosition.y));
+         
+                boxColl.size = new Vector2(
+                Mathf.Abs(initialMousePosition.x - currentMousePosition.x),
+                Mathf.Abs(initialMousePosition.y - currentMousePosition.y));
+            }
         }
 
         // When mouse button is released box is wiped, collider is destroyed
