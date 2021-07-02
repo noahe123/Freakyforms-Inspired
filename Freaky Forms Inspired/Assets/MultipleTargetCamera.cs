@@ -7,6 +7,11 @@ public class MultipleTargetCamera : MonoBehaviour
     public Camera cam;
     public List<Transform> targets;
 
+    // magnification
+    public List<Transform> oldTargets, newTargets;
+    public bool magnify;
+    bool magnifyTargetSet = false;
+
     public Vector3 offset;
     public float smoothTime = 0.5f;
 
@@ -24,6 +29,48 @@ public class MultipleTargetCamera : MonoBehaviour
     private void LateUpdate()
     {
         if (targets.Count == 0) return;
+
+        if (magnify && !magnifyTargetSet)
+        {
+            if (GameObject.FindGameObjectWithTag("Body Outline") != null)
+            {
+                FindObjectOfType<AudioManager>().GetComponent<AudioManager>().Play("Grow");
+
+                maxZoom = 25;
+                magnifyTargetSet = true;
+                oldTargets.Clear();
+                foreach(Transform target in targets)
+                {
+                    oldTargets.Add(target);
+                }
+                newTargets.Clear();
+
+                foreach (GameObject magnifyTarget in GameObject.FindGameObjectsWithTag("Body Outline"))
+                {
+                    newTargets.Add(magnifyTarget.transform.parent.parent.parent);
+                }
+                targets.Clear();
+                foreach (Transform target in newTargets)
+                {
+                    targets.Add(target);
+                }
+            }
+        }
+        else if (!magnify && magnifyTargetSet)
+        {
+            FindObjectOfType<AudioManager>().GetComponent<AudioManager>().Play("Shrink");
+
+
+            maxZoom = 50;
+            targets.Clear();
+            foreach (Transform target in oldTargets)
+            {
+                targets.Add(target);
+            }
+            magnifyTargetSet = false;
+            newTargets.Clear();
+            oldTargets.Clear();
+        }
 
         Move();
         Zoom();
