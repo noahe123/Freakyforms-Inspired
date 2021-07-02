@@ -54,18 +54,17 @@ public class ColorButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 
         foreach (var hit in hits)
         {
-            if (hit.collider.name.Contains("Body Template Normals"))
+            if (hit.collider.name.Contains("Body Template Normals") && hit.collider.gameObject.transform.parent.GetChild(1).gameObject.activeInHierarchy)
             {
-                if (hit.collider.gameObject.transform.parent.GetChild(1).gameObject.activeInHierarchy)
-                {
-                 
+
                         FindObjectOfType<AudioManager>().Play("Paint");
 
                         hit.collider.gameObject.transform.parent.parent.gameObject.GetComponent<SpriteRenderer>().color = myColor;
-                    
-                }
-
+                return;
             }
         }
+
+            FindObjectOfType<AudioManager>().Play("Incorrect");
+
     }
 }

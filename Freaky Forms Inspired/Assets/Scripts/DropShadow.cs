@@ -19,8 +19,16 @@ public class DropShadow : MonoBehaviour
     void Start()
     {
 
+        ResetShadow();
+
+
+
+    }
+
+    public void ResetShadow()
+    {
         //destroy old shadow if it exists
-        if (transform.childCount > 0 )
+        if (transform.childCount > 0)
         {
             Destroy(transform.GetChild(0).gameObject);
         }
@@ -51,11 +59,7 @@ public class DropShadow : MonoBehaviour
 
         //set the shadow strength
         shadowSpriteRenderer.color = colorStart;
-
-
-
     }
-
 
     void LateUpdate()
     {

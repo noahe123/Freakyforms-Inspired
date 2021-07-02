@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 using TMPro;
 
 
@@ -28,8 +29,15 @@ public class BodyPart : MonoBehaviour
 
     Vector3 initialScale, minScale, maxScale;
 
+    MultipleTargetCamera multiTargetCam;
+
+    public string bodyPartType;
+
     private void Start()
     {
+        multiTargetCam = FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>();
+
+
         scaleObj = transform.GetChild(0).GetChild(0).gameObject;
 
         initialScale = transform.GetChild(0).GetChild(0).transform.localScale;
@@ -45,6 +53,7 @@ public class BodyPart : MonoBehaviour
         polygonCollider2D = objectWithSprite.GetComponent<PolygonCollider2D>();
         sprite = objectWithSprite.GetComponent<SpriteRenderer>().sprite;
 
+
         if (!Input.GetMouseButton(0))
         {
             ReleaseBodyPart();
@@ -56,6 +65,19 @@ public class BodyPart : MonoBehaviour
 
         //update collider
         UpdatePolygonCollider2D();
+
+        if (sprite.name.Contains("body"))
+        {
+            bodyPartType = "Body";
+        }
+        else if (sprite.name.Contains("head"))
+        {
+            bodyPartType = "Head";
+        }
+        else if (sprite.name.Contains("mouth"))
+        {
+            bodyPartType = "Mouth";
+        }
 
     }
     private void Update()
@@ -76,13 +98,23 @@ public class BodyPart : MonoBehaviour
                 manager.GetComponent<BodyPartSelectionManager>().DisplayParts();
                 if (manager.GetComponent<BodyPartSelectionManager>().numParts == 0)
                 {
+                    FindObjectOfType<MagnifyingGlass>().GetComponent<Image>().sprite = FindObjectOfType<MagnifyingGlass>().GetComponent<MagnifyingGlass>().spriteDisabled;
+
                     manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
-                    //manager.GetComponent<BodyPartSelectionManager>().colorsList.SetActive(false);
+                    manager.GetComponent<BodyPartSelectionManager>().magnifyingGlass.SetActive(false);
+
+                    multiTargetCam.targets.Remove(transform);
+                    multiTargetCam.oldTargets.Remove(transform);
+                    multiTargetCam.newTargets.Remove(transform);
+
+                    multiTargetCam.magnify = false;
 
                 }
                 FindObjectOfType<AudioManager>().Play("Trash");
-                FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Remove(transform);
-
+                multiTargetCam.targets.Remove(transform);
+                multiTargetCam.oldTargets.Remove(transform);
+                multiTargetCam.newTargets.Remove(transform);
+                
                 Destroy(gameObject);
 
 
@@ -144,6 +176,7 @@ public class BodyPart : MonoBehaviour
             {
                 transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
                 manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
+                manager.GetComponent<BodyPartSelectionManager>().magnifyingGlass.SetActive(false);
 
                 /*
                 if (!ButtonZone.mouseOverZone)
@@ -203,7 +236,7 @@ public class BodyPart : MonoBehaviour
             if (!manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
             {
                 manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(true);
-                //manager.GetComponent<BodyPartSelectionManager>().colorsList.SetActive(true);
+                manager.GetComponent<BodyPartSelectionManager>().magnifyingGlass.SetActive(true);
 
             }
         }
@@ -232,7 +265,7 @@ public class BodyPart : MonoBehaviour
                 if (manager.GetComponent<BodyPartSelectionManager>().transformList.activeInHierarchy)
                 {
                     manager.GetComponent<BodyPartSelectionManager>().transformList.SetActive(false);
-                    //manager.GetComponent<BodyPartSelectionManager>().colorsList.SetActive(false);
+                    manager.GetComponent<BodyPartSelectionManager>().magnifyingGlass.SetActive(false);
                 }
             }
         }
@@ -264,6 +297,8 @@ public class BodyPart : MonoBehaviour
     private List<Vector2> simplifiedPoints = new List<Vector2>();
     public void UpdatePolygonCollider2D(float tolerance = 0.05f)
     {
+        sprite = objectWithSprite.GetComponent<SpriteRenderer>().sprite;
+
         polygonCollider2D.pathCount = sprite.GetPhysicsShapeCount();
         for (int i = 0; i < polygonCollider2D.pathCount; i++)
         {

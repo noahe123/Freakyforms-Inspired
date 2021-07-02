@@ -21,6 +21,17 @@ public class MultipleTargetCamera : MonoBehaviour
 
     private Vector3 velocity;
 
+    float maxZoomInitial;
+    public float maxZoomMagnification;
+
+    Transform origin;
+
+    private void Start()
+    {
+        origin = GameObject.Find("Origin").transform;
+        maxZoomInitial = maxZoom;
+    }
+
     private void Reset()
     {
         cam = GetComponent<Camera>();
@@ -32,12 +43,14 @@ public class MultipleTargetCamera : MonoBehaviour
 
         if (magnify && !magnifyTargetSet)
         {
+
+
             if (GameObject.FindGameObjectWithTag("Body Outline") != null)
             {
                 FindObjectOfType<AudioManager>().GetComponent<AudioManager>().Play("Grow");
-
-                maxZoom = 25;
                 magnifyTargetSet = true;
+                maxZoom = maxZoomMagnification;
+
                 oldTargets.Clear();
                 foreach(Transform target in targets)
                 {
@@ -49,6 +62,7 @@ public class MultipleTargetCamera : MonoBehaviour
                 {
                     newTargets.Add(magnifyTarget.transform.parent.parent.parent);
                 }
+                newTargets.Add(targets[0]);
                 targets.Clear();
                 foreach (Transform target in newTargets)
                 {
@@ -58,18 +72,23 @@ public class MultipleTargetCamera : MonoBehaviour
         }
         else if (!magnify && magnifyTargetSet)
         {
+            maxZoom = maxZoomInitial;
+
             FindObjectOfType<AudioManager>().GetComponent<AudioManager>().Play("Shrink");
-
-
-            maxZoom = 50;
-            targets.Clear();
-            foreach (Transform target in oldTargets)
-            {
-                targets.Add(target);
-            }
             magnifyTargetSet = false;
-            newTargets.Clear();
-            oldTargets.Clear();
+
+
+            if (oldTargets.Count > 0)
+            {
+                targets.Clear();
+
+                foreach (Transform target in oldTargets)
+                {
+                    targets.Add(target);
+                }
+                newTargets.Clear();
+                oldTargets.Clear();
+            }
         }
 
         Move();
@@ -79,7 +98,7 @@ public class MultipleTargetCamera : MonoBehaviour
     private void Zoom()
     {
         var newZoom = Mathf.Lerp(maxZoom, minZoom, GetGreatestDistance() / zoomLimiter);
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, newZoom, Time.deltaTime);
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, newZoom, Time.deltaTime*6);
     }
 
     private void Move()
@@ -103,10 +122,19 @@ public class MultipleTargetCamera : MonoBehaviour
     {
         if (targets.Count == 1) return targets[0].position;
         var bounds = new Bounds(targets[0].position, Vector3.zero);
-        for (int i = 0; i < targets.Count; i++)
+        int i = 0;
+        if (magnify == true)
+        {
+            targets.Remove(origin);
+        }
+        while (i < targets.Count)
         {
             bounds.Encapsulate(targets[i].position);
+            i++;
         }
+
+        targets.Add(origin);
+
         return bounds.center;
     }
 }

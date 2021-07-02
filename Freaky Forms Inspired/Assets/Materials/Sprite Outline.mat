@@ -90,7 +90,7 @@ Material:
     - _REFLECTIONS_ROUGHNESS: 1
     - _REFLECTIONS_WEIGHT: 1
     - _TRANSPARENCY: 0
-    - _Thickness: 43.1
+    - _Thickness: 5.12
     - _TileMode: 0
     - _Weight: 0
     m_Colors:

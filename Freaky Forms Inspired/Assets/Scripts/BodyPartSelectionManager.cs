@@ -9,6 +9,7 @@ public class BodyPartSelectionManager : MonoBehaviour
     public GameObject selectedBodyPart;
 
     public GameObject transformList;
+    public GameObject magnifyingGlass;
     //public GameObject colorsList;
 
 
@@ -23,13 +24,13 @@ public class BodyPartSelectionManager : MonoBehaviour
 
     private void Start()
     {
-
+        magnifyingGlass = GameObject.Find("Magnifying Glass");
         partsCounter = GameObject.Find("Parts Counter");
         transformList = GameObject.Find("TransformList");
         //colorsList = GameObject.Find("ColorsList");
 
         transformList.SetActive(false);
-        //colorsList.SetActive(false);
+        magnifyingGlass.SetActive(false);
 
         DisplayParts();
 
@@ -70,26 +71,26 @@ public class BodyPartSelectionManager : MonoBehaviour
         remainingParts = maxParts - numParts;
         if (remainingParts <= 0)
         {
-            partsCounter.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.black;
-            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = Color.black;
-            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "left.";
+            partsCounter.transform.GetChild(2).GetComponent<TextMeshProUGUI>().color = Color.black;
+            partsCounter.transform.GetChild(3).GetComponent<TextMeshProUGUI>().color = Color.black;
+            partsCounter.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = "left.";
 
         }
         else if (remainingParts <= 3)
         {
-            partsCounter.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = Color.red;
-            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = Color.red;
-            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "left!";
+            partsCounter.transform.GetChild(2).GetComponent<TextMeshProUGUI>().color = Color.red;
+            partsCounter.transform.GetChild(3).GetComponent<TextMeshProUGUI>().color = Color.red;
+            partsCounter.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = "left!";
 
         }
         else
         {
-            partsCounter.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = new Color(0/255, ((float)140 / (float)255), 255/255, 1);
-            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = new Color(0 / 255, ((float)140 / (float)255), 255 / 255, 1);
-            partsCounter.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "left.";
+            partsCounter.transform.GetChild(2).GetComponent<TextMeshProUGUI>().color = new Color(0/255, ((float)140 / (float)255), 255/255, 1);
+            partsCounter.transform.GetChild(3).GetComponent<TextMeshProUGUI>().color = new Color(0 / 255, ((float)140 / (float)255), 255 / 255, 1);
+            partsCounter.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = "left.";
 
         }
-        partsCounter.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "" + (maxParts - numParts);
+        partsCounter.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "" + (maxParts - numParts);
     }
 
     /*

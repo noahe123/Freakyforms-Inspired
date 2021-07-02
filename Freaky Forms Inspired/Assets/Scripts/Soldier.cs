@@ -126,6 +126,7 @@ public class Soldier : MonoBehaviour
 
     private void OnMouseDown()
     {
+        
         mouseOverSoldier = true;
         //7-1
         //greatGrandParentBodyPart.GrabBodyPart();
