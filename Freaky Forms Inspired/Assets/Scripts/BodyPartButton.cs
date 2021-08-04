@@ -89,7 +89,7 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         manager.GetComponent<BodyPartSelectionManager>().DisplayParts();
 
         Transform spawn = Instantiate(prefabBody, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
-        FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn);
+        FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn.transform.GetChild(0));
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
 
         //make child of player
@@ -112,7 +112,7 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         manager.GetComponent<BodyPartSelectionManager>().DisplayParts();
 
         Transform spawn = Instantiate(prefabWheel, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
-        FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn);
+        FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn.transform.GetChild(0));
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
 
         //make child of player

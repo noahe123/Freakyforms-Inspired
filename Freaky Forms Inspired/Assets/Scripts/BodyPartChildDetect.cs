@@ -59,6 +59,7 @@ public class BodyPartChildDetect : MonoBehaviour
                          body.transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(false);
                     }
                 }
+                
                 FindObjectOfType<BodyPartSelectionManager>().GetObjectOnTop().transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
             }
         }

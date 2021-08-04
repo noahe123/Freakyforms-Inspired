@@ -7,7 +7,7 @@ using TMPro;
 
 
 
-public class TestButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
+public class TestButton : MonoBehaviour, IPointerUpHandler
 {
 
     BodyPartSelectionManager manager;
@@ -18,12 +18,6 @@ public class TestButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     }
 
     //OnPointerDown is also required to receive OnPointerUp callbacks
-    public void OnPointerDown(PointerEventData eventData)
-    {
-
-    }
-
-    //Do this when the mouse click on this selectable UI object is released.
     public void OnPointerUp(PointerEventData eventData)
     {
         manager.transformList.SetActive(false);
@@ -37,14 +31,21 @@ public class TestButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
                 rb.constraints = RigidbodyConstraints2D.FreezeAll;
                 rb.gravityScale = 4;
 
-                
+                //get position
+                body.oldPos = rb.transform.position;
+                body.oldRot = rb.transform.rotation;
+
                 Invoke("DisableConstraints", .1f);
-                HideUI();
+
+                FindObjectOfType<AudioManager>().Play("Grow");
 
             }
 
         }
+        HideUI();
     }
+
+
 
     public void DisableConstraints()
     {
@@ -69,14 +70,4 @@ public class TestButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 
     }
 
-    public void ShowUI()
-    {
-        manager.transformList.transform.parent.gameObject.SetActive(true);
-        manager.transformList.transform.parent.parent.GetChild(0).gameObject.SetActive(true);
-        manager.transformList.transform.parent.parent.GetChild(1).gameObject.SetActive(true);
-        manager.transformList.transform.parent.parent.GetChild(2).gameObject.SetActive(true);
-        manager.transformList.transform.parent.parent.GetChild(3).gameObject.SetActive(true);
-        manager.transformList.transform.parent.parent.GetChild(6).gameObject.SetActive(false);
-
-    }
 }

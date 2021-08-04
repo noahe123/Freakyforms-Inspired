@@ -106,7 +106,7 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
 
                     //newObj.GetComponent<BodyPart>().SelectState(false);
 
-                    FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(newObj.transform);
+                    FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(newObj.transform.GetChild(0));
 
                     newObj.GetComponent<SortingGroup>().sortingOrder = manager.GetComponent<BodyPartSelectionManager>().numParts * 50 - manager.GetComponent<BodyPartSelectionManager>().numParts;
                 }
@@ -390,7 +390,7 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             {
                 if (selectedBodies[currBody] == selectedBodies[0])
                 {
-                    FindObjectOfType<AudioManager>().Play("Grow");
+                    FindObjectOfType<AudioManager>().Play("Pizzicato");
                 }
                 if (selectedBodies[currBody] != null)
                 {
@@ -406,7 +406,7 @@ public class TransformationButton : MonoBehaviour, IPointerUpHandler, IPointerDo
             {
                 if (selectedBodies[currBody] == selectedBodies[0])
                 {
-                    FindObjectOfType<AudioManager>().Play("Grow");
+                    FindObjectOfType<AudioManager>().Play("Pizzicato");
                 }
                 if (selectedBodies[currBody] != null)
                 {

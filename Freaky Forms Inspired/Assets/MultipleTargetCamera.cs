@@ -62,7 +62,7 @@ public class MultipleTargetCamera : MonoBehaviour
 
                 foreach (GameObject magnifyTarget in GameObject.FindGameObjectsWithTag("Body Outline"))
                 {
-                    newTargets.Add(magnifyTarget.transform.parent.parent.parent);
+                    newTargets.Add(magnifyTarget.transform.parent.parent);
                 }
                 //newTargets.Add(targets[0]);
                 targets.Clear();

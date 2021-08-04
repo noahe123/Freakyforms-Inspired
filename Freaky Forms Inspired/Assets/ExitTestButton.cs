@@ -7,7 +7,7 @@ using TMPro;
 
 
 
-public class ExitTestButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
+public class ExitTestButton : MonoBehaviour, IPointerUpHandler
 {
 
     BodyPartSelectionManager manager;
@@ -18,56 +18,18 @@ public class ExitTestButton : MonoBehaviour, IPointerUpHandler, IPointerDownHand
     }
 
     //OnPointerDown is also required to receive OnPointerUp callbacks
-    public void OnPointerDown(PointerEventData eventData)
-    {
-
-    }
-
-    //Do this when the mouse click on this selectable UI object is released.
     public void OnPointerUp(PointerEventData eventData)
     {
-        manager.transformList.SetActive(false);
-        foreach (BodyPart body in FindObjectsOfType<BodyPart>())
-        {
-            if (body.transform.GetChild(0).childCount > 1)
-            {
-                Rigidbody2D rb = body.transform.GetChild(0).GetChild(1).GetComponent<Rigidbody2D>();
+        Invoke("ResetRigidbody", 0f);
+        Invoke("ShowUI", .4f);
+        manager.transformList.transform.parent.parent.GetChild(6).gameObject.GetComponent<Image>().enabled = false;
+        manager.transformList.transform.parent.parent.GetChild(6).gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().enabled = false;
 
-                rb.bodyType = RigidbodyType2D.Dynamic;
-                rb.constraints = RigidbodyConstraints2D.FreezeAll;
-                rb.gravityScale = 4;
+        FindObjectOfType<AudioManager>().Play("Shrink");
 
-
-                Invoke("DisableConstraints", .1f);
-                HideUI();
-
-            }
-
-        }
+        //fix selection
     }
 
-    public void DisableConstraints()
-    {
-        foreach (BodyPartChildDetect body in FindObjectsOfType<BodyPartChildDetect>())
-        {
-
-            Rigidbody2D rb = body.transform.GetComponent<Rigidbody2D>();
-
-            rb.constraints = RigidbodyConstraints2D.None;
-
-        }
-    }
-
-    public void HideUI()
-    {
-        manager.transformList.transform.parent.gameObject.SetActive(false);
-        manager.transformList.transform.parent.parent.GetChild(0).gameObject.SetActive(false);
-        manager.transformList.transform.parent.parent.GetChild(1).gameObject.SetActive(false);
-        manager.transformList.transform.parent.parent.GetChild(2).gameObject.SetActive(false);
-        manager.transformList.transform.parent.parent.GetChild(3).gameObject.SetActive(false);
-        manager.transformList.transform.parent.parent.GetChild(6).gameObject.SetActive(true);
-
-    }
 
     public void ShowUI()
     {
@@ -76,7 +38,26 @@ public class ExitTestButton : MonoBehaviour, IPointerUpHandler, IPointerDownHand
         manager.transformList.transform.parent.parent.GetChild(1).gameObject.SetActive(true);
         manager.transformList.transform.parent.parent.GetChild(2).gameObject.SetActive(true);
         manager.transformList.transform.parent.parent.GetChild(3).gameObject.SetActive(true);
+        manager.transformList.transform.parent.parent.GetChild(6).gameObject.GetComponent<Image>().enabled = true;
+        manager.transformList.transform.parent.parent.GetChild(6).gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().enabled = true;
         manager.transformList.transform.parent.parent.GetChild(6).gameObject.SetActive(false);
 
+    }
+
+    public void ResetRigidbody()
+    {
+        foreach (BodyPartChildDetect body in FindObjectsOfType<BodyPartChildDetect>())
+        {
+
+            Rigidbody2D rb = body.transform.GetComponent<Rigidbody2D>();
+
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0;
+            rb.constraints = RigidbodyConstraints2D.None;
+
+            rb.transform.position = body.transform.parent.GetComponent<BodyPart>().oldPos;
+            rb.transform.rotation = body.transform.parent.GetComponent<BodyPart>().oldRot;
+        }
     }
 }

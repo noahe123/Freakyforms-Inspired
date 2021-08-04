@@ -7,10 +7,14 @@ public class DynamicsControl : MonoBehaviour
     bool turnedDynamic;
     BodyPartSelectionManager manager;
 
+    GameObject boxSelection;
+
     // Start is called before the first frame update
     void Start()
     {
         manager = FindObjectOfType<BodyPartSelectionManager>();
+
+        boxSelection = GameObject.Find("BoxSelection");
     }
 
     // Update is called once per frame
@@ -29,9 +33,13 @@ public class DynamicsControl : MonoBehaviour
 
             transform.GetChild(0).GetChild(1).transform.parent = transform;
             transform.GetChild(0).parent = transform.GetChild(1);
+
+
+
         }
         else if (turnedDynamic && (transform.GetChild(0).GetComponent<Rigidbody2D>().bodyType == RigidbodyType2D.Kinematic))
         {
+
             turnedDynamic = false;
 
             transform.GetChild(0).GetChild(0).transform.parent = transform;
@@ -40,8 +48,12 @@ public class DynamicsControl : MonoBehaviour
             manager.transformList.SetActive(true);
             transform.GetChild(0).GetChild(0).GetChild(1).gameObject.SetActive(true);
             transform.GetComponent<BodyPart>().enabled = true;
+
             transform.GetChild(0).GetChild(1).GetComponent<BodyPartChildDetect>().enabled = true;
             transform.GetChild(0).GetChild(1).GetComponent<Soldier>().enabled = true;
+
+            //boxSelection.GetComponent<LineRenderer>().enabled = false;
+            
         }
     }
 }
