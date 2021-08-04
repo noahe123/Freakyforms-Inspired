@@ -17,6 +17,7 @@ public class BoxSelection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         lineRend = GetComponent<LineRenderer>();
         lineRend.positionCount = 0;
         lineRend.widthMultiplier = .25f;
@@ -52,9 +53,14 @@ public class BoxSelection : MonoBehaviour
         {
             foreach (Soldier body in FindObjectsOfType<Soldier>())
             {
+                //IF DYNAMIC
+                if (body.rb.bodyType == RigidbodyType2D.Dynamic)
+                {
+                    return;
+                }
                 //body.SelectState(false);
                 body.soldierSelected = false;
-                body.transform.parent.parent.parent.GetComponent<BodyPart>().SelectState(false);
+                body.transform.parent.parent.GetComponent<BodyPart>().SelectState(false);
             }
         }
 

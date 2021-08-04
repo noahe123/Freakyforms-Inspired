@@ -20,16 +20,20 @@ public class Soldier : MonoBehaviour
     //my variables
     BodyPart greatGrandParentBodyPart;
 
+    public Rigidbody2D rb;
+
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+
         //sprRenderer = GetComponent<SpriteRenderer>();
         soldierSelected = false;
         dragSelectedSoldiersAllowed = false;
         mouseOverSoldier = false;
 
         //my code
-        greatGrandParentBodyPart = transform.parent.parent.parent.GetComponent<BodyPart>();
+        greatGrandParentBodyPart = transform.parent.parent.GetComponent<BodyPart>();
 
 
     }
@@ -39,6 +43,12 @@ public class Soldier : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+
+        }
         if (collision.gameObject.GetComponent<BoxSelection>())
         {
             //enable outline pulse
@@ -56,6 +66,12 @@ public class Soldier : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+
+        }
         if (collision.gameObject.GetComponent<BoxSelection>() && Input.GetMouseButton(0))
         {
             //disable outline pulse
@@ -67,14 +83,18 @@ public class Soldier : MonoBehaviour
 
 
     private void Update()
-    {
+    {        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+        }
         if (Input.GetMouseButtonUp(0))
         {
             noOffsetPlease = false;
 
             if (soldierSelected == true)
             {
-                transform.parent.GetChild(1).gameObject.SetActive(true);
+                transform.parent.GetChild(0).GetChild(1).gameObject.SetActive(true);
             }
         }
 
@@ -85,8 +105,8 @@ public class Soldier : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             /*
-            dragOffsetX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.position.x;
-            dragOffsetY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.position.y;
+            dragOffsetX = Camera.main.ScreenToWorldPoint(Input.mousePosition).x - transform.parent.position.x;
+            dragOffsetY = Camera.main.ScreenToWorldPoint(Input.mousePosition).y - transform.parent.position.y;
             */
 
 
@@ -96,7 +116,7 @@ public class Soldier : MonoBehaviour
         // And ofcourse I need to get mouse position
         if (Input.GetMouseButton(0))
         {
-            mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
+            mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.parent.position.z - Camera.main.transform.position.z));
         }
 
         //Pretty obvious piece of code I guess :-) If it's not just let me know.
@@ -104,9 +124,9 @@ public class Soldier : MonoBehaviour
 
         if (soldierSelected && dragSelectedSoldiersAllowed)
         {
-            // transform.parent.parent.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
+            // transform.parent.parent.parent.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);
             //7-1
-            transform.parent.parent.parent.GetComponent<BodyPart>().MoveBodyPart();
+            transform.parent.parent.GetComponent<BodyPart>().MoveBodyPart();
 
         }
 
@@ -125,19 +145,30 @@ public class Soldier : MonoBehaviour
     // No need to explain I hope
 
     private void OnMouseDown()
-    {
-        
-        mouseOverSoldier = true;
-        //7-1
-        //greatGrandParentBodyPart.GrabBodyPart();
-        FindObjectOfType<BodyPartSelectionManager>().GetObjectOnTop().GetComponent<BodyPart>().GrabBodyPart();
+    {        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+        }
+
+        if (!NonSelectableZone.mouseEnterZone)
+        {
+            mouseOverSoldier = true;
+            //7-1
+            //greatGrandParentBodyPart.GrabBodyPart();
+            FindObjectOfType<BodyPartSelectionManager>().GetObjectOnTop().GetComponent<BodyPart>().GrabBodyPart();
+        }
     }
 
     // Same here
 
     private void OnMouseUp()
     {
-
+        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+        }
 
         //soldierSelected = false;
 
@@ -148,7 +179,11 @@ public class Soldier : MonoBehaviour
     // Hope it's clear as well
 
     private void OnMouseDrag()
-    {
+    {        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+        }
 
         dragSelectedSoldiersAllowed = true;
 
@@ -157,8 +192,8 @@ public class Soldier : MonoBehaviour
             dragSelectedSoldiersAllowed = false;
         }
 
-        /*mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
-        transform.parent.parent.transform.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);*/
+        /*mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.parent.position.z - Camera.main.transform.position.z));
+        transform.parent.parent.parent.transform.position = new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY);*/
         //greatGrandParentBodyPart.GrabBodyPart();
         //greatGrandParentBodyPart.selected = true;
     }

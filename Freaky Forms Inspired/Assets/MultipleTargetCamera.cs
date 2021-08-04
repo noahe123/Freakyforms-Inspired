@@ -26,6 +26,10 @@ public class MultipleTargetCamera : MonoBehaviour
 
     Transform origin;
 
+    public float outOfBoundsX, outOfBoundsY;
+
+    public bool moveable = true;
+
     private void Start()
     {
         origin = GameObject.Find("Origin").transform;
@@ -43,8 +47,6 @@ public class MultipleTargetCamera : MonoBehaviour
 
         if (magnify && !magnifyTargetSet)
         {
-
-
             if (GameObject.FindGameObjectWithTag("Body Outline") != null)
             {
                 FindObjectOfType<AudioManager>().GetComponent<AudioManager>().Play("Grow");
@@ -62,7 +64,7 @@ public class MultipleTargetCamera : MonoBehaviour
                 {
                     newTargets.Add(magnifyTarget.transform.parent.parent.parent);
                 }
-                newTargets.Add(targets[0]);
+                //newTargets.Add(targets[0]);
                 targets.Clear();
                 foreach (Transform target in newTargets)
                 {
@@ -91,8 +93,9 @@ public class MultipleTargetCamera : MonoBehaviour
             }
         }
 
-        Move();
-        Zoom();
+            Move();
+            Zoom();
+        
     }
 
     private void Zoom()
@@ -103,14 +106,56 @@ public class MultipleTargetCamera : MonoBehaviour
 
     private void Move()
     {
-        var centerPoint = GetCenterPoint();
-        var newPosition = centerPoint + offset;
+        Vector3 newPosition = transform.position;
+        if (moveable)
+        {
+            var centerPoint = GetCenterPoint();
+            newPosition = centerPoint + offset;
+        }
+
         transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
+        // origin.transform.position = new Vector3(transform.position.x, transform.position.y, origin.transform.position.z);
+
+        bool outOfBounds = false;
+        if (transform.position.x > outOfBoundsX)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, new Vector3(outOfBoundsX, transform.position.y, transform.position.z), ref velocity, smoothTime/20);
+            outOfBounds = true;
+        }
+        else if (transform.position.x < -outOfBoundsX)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, new Vector3(-outOfBoundsX, transform.position.y, transform.position.z), ref velocity, smoothTime/20);
+            outOfBounds = true;
+
+        }
+
+        if (transform.position.y > outOfBoundsY)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, new Vector3(transform.position.x, outOfBoundsY, transform.position.z), ref velocity, smoothTime/20);
+            outOfBounds = true;
+
+        }
+        else if (transform.position.y < -10)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, new Vector3(transform.position.x, -10, transform.position.z), ref velocity, smoothTime/20);
+            outOfBounds = true;
+
+        }
+        if (outOfBounds)
+        {
+            origin.transform.position = new Vector3(newPosition.x, newPosition.y, origin.transform.position.z);
+            outOfBounds = false;
+        }
+
+
+
+        //origin.transform.position = new Vector3(transform.position.x, transform.position.y, origin.transform.position.z);
     }
 
     private float GetGreatestDistance()
     {
         var bounds = new Bounds(targets[0].position, Vector3.zero);
+
         for (int i = 0; i < targets.Count; i++)
         {
             bounds.Encapsulate(targets[i].position);
@@ -121,12 +166,11 @@ public class MultipleTargetCamera : MonoBehaviour
     private Vector3 GetCenterPoint()
     {
         if (targets.Count == 1) return targets[0].position;
+
         var bounds = new Bounds(targets[0].position, Vector3.zero);
         int i = 0;
-        if (magnify == true)
-        {
-            targets.Remove(origin);
-        }
+        targets.Remove(origin);
+
         while (i < targets.Count)
         {
             bounds.Encapsulate(targets[i].position);

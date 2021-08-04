@@ -33,8 +33,14 @@ public class BodyPart : MonoBehaviour
 
     public string bodyPartType;
 
+    bool turnedDynamic;
+
+    Rigidbody2D rb;
+
     private void Start()
     {
+        rb = transform.GetChild(0).GetChild(1).GetComponent<Rigidbody2D>();
+
         multiTargetCam = FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>();
 
 
@@ -50,7 +56,7 @@ public class BodyPart : MonoBehaviour
         Debug.Log(initialScale);
         SelectState(true);
         objectWithSprite = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
-        polygonCollider2D = objectWithSprite.GetComponent<PolygonCollider2D>();
+        polygonCollider2D = transform.GetChild(0).GetChild(1).GetComponent<PolygonCollider2D>();
         sprite = objectWithSprite.GetComponent<SpriteRenderer>().sprite;
 
 
@@ -78,10 +84,24 @@ public class BodyPart : MonoBehaviour
         {
             bodyPartType = "Mouth";
         }
+        else if (sprite.name.Contains("wheel"))
+        {
+            bodyPartType = "Wheel";
+        }
 
     }
+
     private void Update()
     {
+        if (rb != null)
+        { 
+            //IF DYNAMIC
+            if (rb.bodyType == RigidbodyType2D.Dynamic)
+            {
+                return;
+            }
+        }
+
         if (Input.GetMouseButtonUp(0))
         {
             dragOffsetX = 0;
@@ -165,8 +185,14 @@ public class BodyPart : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0))
         {
-           // Debug.Log(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)));
+            // Debug.Log(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z)));
             //Debug.Log(transform.position);
+            //IF DYNAMIC
+            if (rb.bodyType == RigidbodyType2D.Dynamic)
+            {
+                return;
+            }
+
 
             mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
             dragOffsetX = mousePos.x - transform.position.x;
@@ -196,15 +222,32 @@ public class BodyPart : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+
+        }
         if (!releasedBodyPart && selected)
         {
             //7-1
             MoveBodyPart();
         }
+
+
     }
 
     public void SelectState(bool selectState)
     {
+        if (rb != null)
+        {
+
+            //IF DYNAMIC
+            if (rb.bodyType == RigidbodyType2D.Dynamic)
+            {
+                return;
+            }
+        }
 
         selected = selectState;
 
@@ -227,6 +270,13 @@ public class BodyPart : MonoBehaviour
 
     public void ReleaseBodyPart()
     {
+        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+        }
+
+        Camera.main.GetComponent<MultipleTargetCamera>().moveable = true;
 
 
         FindObjectOfType<AudioManager>().Play("Release");
@@ -251,6 +301,16 @@ public class BodyPart : MonoBehaviour
 
     public void GrabBodyPart()
     {
+        if (rb != null)
+        {
+            //IF DYNAMIC
+            if (rb.bodyType == RigidbodyType2D.Dynamic)
+            {
+                return;
+
+            }
+        }
+        Camera.main.GetComponent<MultipleTargetCamera>().moveable = false;
         /*
         if (manager.GetComponent<BodyPartSelectionManager>().GetObjectOnTop() != gameObject)
         {
@@ -282,14 +342,19 @@ public class BodyPart : MonoBehaviour
     
     public void MoveBodyPart()
     {
-/*
-        Vector3 vector = new Vector3(Input.mousePosition.x-Screen.width*.45f, Input.mousePosition.y-Screen.height*.43f, Camera.main.nearClipPlane);
-        Debug.Log(Camera.main.ScreenToWorldPoint(vector));
-       transform.position = Vector2.Lerp(transform.position, Camera.main.ScreenToWorldPoint(vector*10) + new Vector3(dragOffsetX, dragOffsetY, 0), followSpeed);*/
+        /*
+                Vector3 vector = new Vector3(Input.mousePosition.x-Screen.width*.45f, Input.mousePosition.y-Screen.height*.43f, Camera.main.nearClipPlane);
+                Debug.Log(Camera.main.ScreenToWorldPoint(vector));
+               transform.position = Vector2.Lerp(transform.position, Camera.main.ScreenToWorldPoint(vector*10) + new Vector3(dragOffsetX, dragOffsetY, 0), followSpeed);*/
+        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+        }
 
-        
         mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, transform.position.z - Camera.main.transform.position.z));
         transform.position = Vector2.Lerp(transform.position, new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY), followSpeed);
+        //transform.position =  Vector3.MoveTowards(transform.position, new Vector2(mousePos.x - dragOffsetX, mousePos.y - dragOffsetY), followSpeed*100);
     }
 
     // Store these outside the method so it can reuse the Lists (free performance)
@@ -297,6 +362,12 @@ public class BodyPart : MonoBehaviour
     private List<Vector2> simplifiedPoints = new List<Vector2>();
     public void UpdatePolygonCollider2D(float tolerance = 0.05f)
     {
+        //IF DYNAMIC
+        if (rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            return;
+        }
+
         sprite = objectWithSprite.GetComponent<SpriteRenderer>().sprite;
 
         polygonCollider2D.pathCount = sprite.GetPhysicsShapeCount();

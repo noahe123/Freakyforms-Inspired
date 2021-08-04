@@ -33,7 +33,7 @@ public class TrashBin : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         foreach (BodyPart body in FindObjectsOfType<BodyPart>())
         {
-            if (body.selected || body.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Soldier>().soldierSelected)
+            if (body.selected || body.transform.GetChild(0).GetChild(1).GetComponent<Soldier>().soldierSelected)
             {
                 body.overTrash = true;
                 SetTrashState(1);
@@ -45,7 +45,7 @@ public class TrashBin : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         foreach (BodyPart body in FindObjectsOfType<BodyPart>())
         {
-            if (body.selected || body.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Soldier>().soldierSelected)
+            if (body.selected || body.transform.GetChild(0).GetComponent<Soldier>().soldierSelected)
             {
                 body.overTrash = false;
                 SetTrashState(0);

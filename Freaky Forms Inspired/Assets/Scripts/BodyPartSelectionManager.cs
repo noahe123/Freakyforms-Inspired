@@ -24,6 +24,8 @@ public class BodyPartSelectionManager : MonoBehaviour
 
     private void Start()
     {
+
+
         magnifyingGlass = GameObject.Find("Magnifying Glass");
         partsCounter = GameObject.Find("Parts Counter");
         transformList = GameObject.Find("TransformList");
@@ -52,13 +54,13 @@ public class BodyPartSelectionManager : MonoBehaviour
         GameObject selected = null;
         foreach (RaycastHit2D hit in hits)
         {
-            if (hit.transform.parent.parent.parent.GetComponent<SortingGroup>() != null)
+            if (hit.transform.parent.parent.GetComponent<SortingGroup>() != null)
             {
-                int myLayer = hit.transform.parent.parent.parent.GetComponent<SortingGroup>().sortingOrder;
+                int myLayer = hit.transform.parent.parent.GetComponent<SortingGroup>().sortingOrder;
                 if (myLayer > maxLayer)
                 {
                     maxLayer = myLayer;
-                    selected = hit.transform.parent.parent.parent.gameObject;
+                    selected = hit.transform.parent.parent.gameObject;
                 }
             }
             //Debug.Log(hit.transform.name);

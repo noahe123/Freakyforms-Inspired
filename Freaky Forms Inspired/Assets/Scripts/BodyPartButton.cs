@@ -13,10 +13,13 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     public Vector3 spawnOffset;
     private Sprite mySprite;
     private Button myButton;
-    public Transform prefab;
+    public Transform prefabBody;
+    public Transform prefabWheel;
+
     public Vector3 offset = new Vector3(4f, -4f, 0);
     GameObject manager;
     GameObject player;
+
 
     void Start()
     {
@@ -40,6 +43,10 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         {
             transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "mouth";
         }
+        else if (mySprite.name.Contains("wheel"))
+        {
+            transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = "wheel";
+        }
     }
 
     public void OnPointerDown(PointerEventData data)
@@ -60,18 +67,28 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
     void InstantiateBodyPart()
     {
-        prefab.GetChild(0).GetChild(0).GetComponent<SpriteMask>().sprite = mySprite;
-        prefab.GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = mySprite;
-        prefab.GetChild(0).GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = mySprite;
+        //**************** spawn head / body
+        if (mySprite.name.Contains("body") || mySprite.name.Contains("head") || mySprite.name.Contains("mouth"))
+        {
+            InstantiateBody();
+        }
+        else if (mySprite.name.Contains("wheel"))
+        {
+            InstantiateWheel();
+        }
+    }
 
+    void InstantiateBody()
+    {
+        prefabBody.GetChild(0).GetChild(0).GetComponent<SpriteMask>().sprite = mySprite;
+        prefabBody.GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = mySprite;
+        prefabBody.GetChild(0).GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = mySprite;
 
         Vector3 vector = new Vector3(Input.mousePosition.x - Screen.width * .45f, Input.mousePosition.y - Screen.height * .43f, Camera.main.nearClipPlane);
         manager.GetComponent<BodyPartSelectionManager>().numParts++;
         manager.GetComponent<BodyPartSelectionManager>().DisplayParts();
 
-        //BODY
-
-        Transform spawn = Instantiate(prefab, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
+        Transform spawn = Instantiate(prefabBody, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
         FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn);
         FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
 
@@ -79,9 +96,31 @@ public class BodyPartButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         spawn.transform.parent = player.transform;
 
         //sorting layer
-        spawn.gameObject.GetComponent<SortingGroup>().sortingOrder = manager.GetComponent<BodyPartSelectionManager>().numParts*50 - manager.GetComponent<BodyPartSelectionManager>().numParts;
+        spawn.gameObject.GetComponent<SortingGroup>().sortingOrder = manager.GetComponent<BodyPartSelectionManager>().numParts * 50 - manager.GetComponent<BodyPartSelectionManager>().numParts;
 
         spawn.GetComponent<BodyPart>().GrabBodyPart();
     }
 
+    void InstantiateWheel()
+    {
+        prefabBody.GetChild(0).GetChild(0).GetComponent<SpriteMask>().sprite = mySprite;
+        prefabBody.GetChild(0).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = mySprite;
+        prefabBody.GetChild(0).GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = mySprite;
+
+        Vector3 vector = new Vector3(Input.mousePosition.x - Screen.width * .45f, Input.mousePosition.y - Screen.height * .43f, Camera.main.nearClipPlane);
+        manager.GetComponent<BodyPartSelectionManager>().numParts++;
+        manager.GetComponent<BodyPartSelectionManager>().DisplayParts();
+
+        Transform spawn = Instantiate(prefabWheel, Camera.main.ScreenToWorldPoint(vector * 10) + spawnOffset, Quaternion.identity);
+        FindObjectOfType<MultipleTargetCamera>().GetComponent<MultipleTargetCamera>().targets.Add(spawn);
+        FindObjectOfType<TrashBin>().GetComponent<TrashBin>().SetTrashState(0);
+
+        //make child of player
+        spawn.transform.parent = player.transform;
+
+        //sorting layer
+        spawn.gameObject.GetComponent<SortingGroup>().sortingOrder = manager.GetComponent<BodyPartSelectionManager>().numParts * 50 - manager.GetComponent<BodyPartSelectionManager>().numParts;
+
+        spawn.GetComponent<BodyPart>().GrabBodyPart();
+    }
 }

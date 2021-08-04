@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -4
-  m_Sprite: {fileID: 21300000, guid: 1394a0ecd99a72743bcc3f1c96c78135, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6a0019c23a766fc48b4bee4dbe11ac76, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -252,7 +252,7 @@ SpriteMask:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 1394a0ecd99a72743bcc3f1c96c78135, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6a0019c23a766fc48b4bee4dbe11ac76, type: 3}
   m_MaskAlphaCutoff: 0.302
   m_FrontSortingLayerID: 0
   m_BackSortingLayerID: 0
@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 1983586132}
   - component: {fileID: -8177999077753198864}
   m_Layer: 0
-  m_Name: Body Template
+  m_Name: Wheel Template
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -410,7 +410,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -4
-  m_Sprite: {fileID: 21300000, guid: 1394a0ecd99a72743bcc3f1c96c78135, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6a0019c23a766fc48b4bee4dbe11ac76, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -450,7 +450,7 @@ GameObject:
   - component: {fileID: 2310333353558473296}
   - component: {fileID: 673506954208929990}
   - component: {fileID: 7919107208420162555}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Body Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
