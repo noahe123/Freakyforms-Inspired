@@ -59,7 +59,7 @@ public class BodyPart : MonoBehaviour
 
         manager = GameObject.FindGameObjectWithTag("Manager");
 
-        Debug.Log(initialScale);
+
         SelectState(true);
         objectWithSprite = transform.GetChild(0).GetChild(0).GetChild(0).gameObject;
         polygonCollider2D = transform.GetChild(0).GetChild(1).GetComponent<PolygonCollider2D>();

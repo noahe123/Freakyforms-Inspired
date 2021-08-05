@@ -56,6 +56,8 @@ public class TestButton : MonoBehaviour, IPointerUpHandler
 
                 rb.constraints = RigidbodyConstraints2D.None;
 
+            rb.GetComponent<BodyPartChildDetect>().Invoke("DisableWheelCollision", 0f);
+
         }
     }
 

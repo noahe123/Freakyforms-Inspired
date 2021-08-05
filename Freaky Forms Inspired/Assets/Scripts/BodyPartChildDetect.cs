@@ -15,9 +15,13 @@ public class BodyPartChildDetect : MonoBehaviour
     public bool testing = false;
     public bool constraintsFlag = true;
 
-    //joint motor
-    JointMotor2D jointMotor;
+    //joint stuff
+     JointMotor2D jointMotor;
     JointSuspension2D jointSuspension;
+
+    public Vector2 oldPos = Vector2.zero;
+
+    public WheelJoint2D wheelJoint;
 
 
     private void Start()
@@ -94,95 +98,121 @@ public class BodyPartChildDetect : MonoBehaviour
             // greatGrandParentBodyPart.SelectState(false);
             greatGrandParentBodyPart.selected = false;
         }
+
+
     }
+
+    /* private void OnCollisionStay2D(Collision2D collision)
+    {
+       
+        if (collision.gameObject.layer == 9 && (Vector2)transform.position != oldPos)
+        {
+            oldPos = transform.position;
+            Debug.Log("Colliding with layer");
+            ResetWheel(collision);
+        }
+}*/
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 9)
+       //GetComponent<BodyPartChildDetect>().wheelJoint.enableCollision = true;
+
+    }
+    private void OnCollisionStay2D(Collision2D collision)
         {
-            if (collision.gameObject.GetComponent<Rigidbody2D>() != null)
+            if (collision.gameObject.layer == 9)
             {
+
                 if ((GetComponent<FixedJoint2D>() != null && GetComponent<FixedJoint2D>().connectedBody != collision.rigidbody) || GetComponent<FixedJoint2D>() == null)
-                {/*
-                    testing = true;
-                    if (collision.transform.GetComponent<FixedJoint2D>() != null)
-                    {/*
-                        foreach(FixedJoint2D collisionJoint in collision.transform)
+                {
+                        if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Body" || transform.parent.GetComponent<BodyPart>().bodyPartType == "Head" || transform.parent.GetComponent<BodyPart>().bodyPartType == "Mouth")
                         {
+                            //****************** joint connector code!!! *********************
+                            // creates joint
+                            FixedJoint2D joint = gameObject.AddComponent<FixedJoint2D>();
+                            // sets joint position to point of contact
+                            joint.anchor = collision.GetContact(0).point;
+                            // conects the joint to the other object
+                            joint.connectedBody = collision.transform.GetComponent<Rigidbody2D>();
 
-                        }*/
-                    /*
-                        if (collision.transform.GetComponent<FixedJoint2D>().connectedBody != rb)
-                        {
-                            gameObject.AddComponent(typeof(FixedJoint2D));
-                            gameObject.GetComponent<FixedJoint2D>().connectedBody = collision.rigidbody;
+
+                            // Stops objects from continuing to collide and creating more joints
+                            joint.enableCollision = false;
                         }
-                    }
-                    else if (collision.transform.GetComponent<FixedJoint2D>() == null)
-                    {
-                        gameObject.AddComponent(typeof(FixedJoint2D));
-                        gameObject.GetComponent<FixedJoint2D>().connectedBody = collision.rigidbody;
-                    }
-                       /* //disable constraints
-                        GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
-                        collision.gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;*/
-
-                    if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Body" || transform.parent.GetComponent<BodyPart>().bodyPartType == "Head" || transform.parent.GetComponent<BodyPart>().bodyPartType == "Mouth")
-                    {
-                        //****************** joint connector code!!! *********************
-                        // creates joint
-                        FixedJoint2D joint = gameObject.AddComponent<FixedJoint2D>();
-                        // sets joint position to point of contact
-                        joint.anchor = collision.GetContact(0).point;
-                     
-                        // conects the joint to the other object
-                        joint.connectedBody = collision.transform.GetComponent<Rigidbody2D>();
-
-                        //joint.autoConfigureDistance = false;
-                        //joint.distance = 0;
-
-                        // Stops objects from continuing to collide and creating more joints
-                        joint.enableCollision = false;
-                    }
-                    else if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Wheel")
-                    {
-                        float tempRotZ = collision.transform.localEulerAngles.z*Mathf.Deg2Rad;
-
-                        //****************** wheel code!!! *********************
-                        // creates joint
-                        WheelJoint2D joint = gameObject.AddComponent<WheelJoint2D>();
-
-                        joint.autoConfigureConnectedAnchor = false;
-                        joint.anchor = Vector2.zero;
-
-                        
-                        joint.connectedAnchor = (-new Vector2(collision.transform.position.x * (1/ collision.transform.localScale.x), collision.transform.position.y * (1 / collision.transform.localScale.y)) 
-                            + new Vector2((collision.GetContact(0).otherCollider.transform.position.x * (1/ collision.transform.localScale.x)), collision.GetContact(0).otherCollider.transform.position.y * (1 / collision.transform.localScale.y)))
-                            * 2;
-
-                        tempRotZ = -tempRotZ + Mathf.Atan2(joint.connectedAnchor.y , joint.connectedAnchor.x);
-
-                        joint.connectedAnchor = new Vector2(Mathf.Cos(tempRotZ), Mathf.Sin(tempRotZ)) * joint.connectedAnchor.magnitude;
-
-                        joint.connectedBody = collision.transform.GetComponent<Rigidbody2D>();
-                     
-                        // Stops objects from continuing to collide and creating more joints
-                        joint.enableCollision = false;
-
-                        // joint.autoConfigureDistance = false;
-                        // joint.distance = 0;
-                        joint.useMotor = true;
-                        jointMotor.motorSpeed = 200;
-                        jointMotor.maxMotorTorque = 1000;
-                        jointSuspension.frequency = 20;
-                        joint.motor = jointMotor;
-                        joint.suspension = jointSuspension;
-                    }
+   
 
                 }
+            //****************** wheel code!!! *********************
+            if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Wheel" && (Vector2)transform.position != oldPos)
+            {
+                ResetWheel(collision);
+                oldPos = transform.position;
+
             }
         }
+        
     }
 
+     void ResetWheel(Collision2D collision)
+    {
 
+        Debug.Log("Resetting Wheel");
+
+        float tempRotZ = collision.transform.localEulerAngles.z * Mathf.Deg2Rad;
+
+
+
+            if (GetComponent<WheelJoint2D>() != null)
+            {
+                // gets joint
+                wheelJoint = GetComponent<WheelJoint2D>();
+            }
+            else
+            {
+                // creates joint
+                wheelJoint = gameObject.AddComponent<WheelJoint2D>();
+            }
+
+            wheelJoint.autoConfigureConnectedAnchor = false;
+            wheelJoint.anchor = Vector2.zero;
+
+
+            wheelJoint.connectedAnchor = (-new Vector2(collision.transform.position.x * (1 / collision.transform.localScale.x), collision.transform.position.y * (1 / collision.transform.localScale.y))
+                + new Vector2((collision.GetContact(0).otherCollider.transform.position.x * (1 / collision.transform.localScale.x)), collision.GetContact(0).otherCollider.transform.position.y * (1 / collision.transform.localScale.y)))
+                * 2;
+
+            tempRotZ = -tempRotZ + Mathf.Atan2(wheelJoint.connectedAnchor.y, wheelJoint.connectedAnchor.x);
+
+        wheelJoint.connectedAnchor = new Vector2(Mathf.Cos(tempRotZ), Mathf.Sin(tempRotZ)) * wheelJoint.connectedAnchor.magnitude;
+
+        wheelJoint.connectedBody = collision.transform.GetComponent<Rigidbody2D>();
+
+        // Stops objects from continuing to collide and creating more joints
+
+        // joint.autoConfigureDistance = false;
+        // joint.distance = 0;
+         wheelJoint.useMotor = true;
+            jointMotor.motorSpeed = 200;
+            jointMotor.maxMotorTorque = 1000;
+            jointSuspension.frequency = 20;
+            wheelJoint.motor = jointMotor;
+            wheelJoint.suspension = jointSuspension;
+
+;    }
+
+    public void DisableWheelCollision()
+    {
+        if (GetComponent<WheelJoint2D>() != null)
+        {
+            GetComponent<BodyPartChildDetect>().wheelJoint.enableCollision = false;
+        }
+    }
+    public void EnableWheelCollision()
+    {
+        if (GetComponent<WheelJoint2D>() != null)
+        {
+            GetComponent<BodyPartChildDetect>().wheelJoint.enableCollision = true;
+        }
+    }
 }
+
