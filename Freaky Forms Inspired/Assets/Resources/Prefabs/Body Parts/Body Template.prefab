@@ -887,6 +887,7 @@ MonoBehaviour:
   testing: 0
   constraintsFlag: 1
   oldPos: {x: 0, y: 0}
+  oldCollPos: {x: 0, y: 0}
   wheelJoint: {fileID: 0}
 --- !u!114 &7919107208420162555
 MonoBehaviour:

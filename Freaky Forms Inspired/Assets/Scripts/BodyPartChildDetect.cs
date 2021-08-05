@@ -20,6 +20,14 @@ public class BodyPartChildDetect : MonoBehaviour
     JointSuspension2D jointSuspension;
 
     public Vector2 oldPos = Vector2.zero;
+    public Vector2 oldPosColl = Vector2.zero;
+    public Quaternion oldRot = Quaternion.identity;
+    public Quaternion oldRotColl = Quaternion.identity;
+    public Vector2 oldScale = Vector2.zero;
+    public Vector2 oldScaleColl = Vector2.zero;
+
+
+
 
     public WheelJoint2D wheelJoint;
 
@@ -115,8 +123,16 @@ public class BodyPartChildDetect : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       //GetComponent<BodyPartChildDetect>().wheelJoint.enableCollision = true;
+        //GetComponent<BodyPartChildDetect>().wheelJoint.enableCollision = true;
+        if (collision.gameObject.layer == 9)
+        {
+            if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Wheel")
+            {
+                ResetWheel(collision);
 
+            }
+        }
+        
     }
     private void OnCollisionStay2D(Collision2D collision)
         {
@@ -143,12 +159,14 @@ public class BodyPartChildDetect : MonoBehaviour
 
                 }
             //****************** wheel code!!! *********************
-            if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Wheel" && (Vector2)transform.position != oldPos)
+            /*
+            if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Wheel" && ((Vector2)transform.position != oldPos || (Vector2)collision.transform.position != oldPosColl))
             {
                 ResetWheel(collision);
                 oldPos = transform.position;
-
-            }
+                oldPosColl = collision.transform.position;
+                oldScale = transform.localScale;
+            }*/
         }
         
     }
@@ -164,8 +182,21 @@ public class BodyPartChildDetect : MonoBehaviour
 
             if (GetComponent<WheelJoint2D>() != null)
             {
-                // gets joint
-                wheelJoint = GetComponent<WheelJoint2D>();
+                bool wheelHasCollider = false;
+                foreach (WheelJoint2D wheel in GetComponents<WheelJoint2D>())
+                {
+                    if (wheel.connectedBody == collision.rigidbody)
+                    {
+                        wheelHasCollider = true;
+                        wheelJoint = wheel;
+                    }
+
+                }
+                if (!wheelHasCollider)
+                {
+                    // creates joint
+                    wheelJoint = gameObject.AddComponent<WheelJoint2D>();
+                }
             }
             else
             {
@@ -202,16 +233,22 @@ public class BodyPartChildDetect : MonoBehaviour
 
     public void DisableWheelCollision()
     {
-        if (GetComponent<WheelJoint2D>() != null)
+        if (GetComponent<Joint2D>() != null)
         {
-            GetComponent<BodyPartChildDetect>().wheelJoint.enableCollision = false;
+            foreach (Joint2D wheel in GetComponents<WheelJoint2D>())
+            {
+                wheel.enableCollision = false;
+            }
         }
     }
     public void EnableWheelCollision()
     {
-        if (GetComponent<WheelJoint2D>() != null)
+        if (GetComponent<Joint2D>() != null)
         {
-            GetComponent<BodyPartChildDetect>().wheelJoint.enableCollision = true;
+            foreach (Joint2D wheel in GetComponents<WheelJoint2D>())
+            {
+                wheel.enableCollision = true;
+            }
         }
     }
 }
