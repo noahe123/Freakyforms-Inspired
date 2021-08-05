@@ -42,7 +42,6 @@ public class BodyPart : MonoBehaviour
     public Vector2 oldPos;
     public Quaternion oldRot;
 
-
     private void Start()
     {
         rb = transform.GetChild(0).GetChild(1).GetComponent<Rigidbody2D>();

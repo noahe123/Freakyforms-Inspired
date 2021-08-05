@@ -60,6 +60,9 @@ public class ExitTestButton : MonoBehaviour, IPointerUpHandler
             rb.transform.rotation = body.transform.parent.GetComponent<BodyPart>().oldRot;
 
             rb.GetComponent<BodyPartChildDetect>().Invoke("EnableWheelCollision", 0f);
+            rb.GetComponent<BodyPartChildDetect>().Invoke("RemoveWheels", 0f);
+            rb.GetComponent<BodyPartChildDetect>().addedWheels = false;
+
 
         }
     }

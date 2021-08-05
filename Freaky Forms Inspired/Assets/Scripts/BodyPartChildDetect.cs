@@ -26,14 +26,19 @@ public class BodyPartChildDetect : MonoBehaviour
     public Vector2 oldScale = Vector2.zero;
     public Vector2 oldScaleColl = Vector2.zero;
 
-
-
+    public bool addedWheels = false;
+    /*
+    [SerializeField] List<Rigidbody2D> oldBodies = new List<Rigidbody2D>();
+    [SerializeField] List<Rigidbody2D> oldBodiesTemp = new List<Rigidbody2D>();
+    [SerializeField] List<Rigidbody2D> newBodies = new List<Rigidbody2D>();
+    public bool updateJoints = false;*/
 
     public WheelJoint2D wheelJoint;
 
-
     private void Start()
     {
+        
+
         rb = GetComponent<Rigidbody2D>();
 
      
@@ -120,26 +125,48 @@ public class BodyPartChildDetect : MonoBehaviour
             ResetWheel(collision);
         }
 }*/
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    
+    /*
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        //GetComponent<BodyPartChildDetect>().wheelJoint.enableCollision = true;
         if (collision.gameObject.layer == 9)
         {
+
             if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Wheel")
             {
-                ResetWheel(collision);
-
+                if (!addedWheels)
+                {
+                    addedWheels = true;
+                    ResetWheel(collision);
+                }
             }
         }
+    }*/
+    
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        
+        
         
     }
     private void OnCollisionStay2D(Collision2D collision)
         {
-            if (collision.gameObject.layer == 9)
+
+        if (collision.gameObject.layer == 9)
             {
 
-                if ((GetComponent<FixedJoint2D>() != null && GetComponent<FixedJoint2D>().connectedBody != collision.rigidbody) || GetComponent<FixedJoint2D>() == null)
+                if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Wheel")
+                {
+                    if (!addedWheels)
+                    {
+                    Invoke("MakeAddWheelsTrue", .2f);
+                        Debug.Log("oncollisionstay");
+                        ResetWheel(collision);
+                    }
+                }
+
+
+            if ((GetComponent<FixedJoint2D>() != null && GetComponent<FixedJoint2D>().connectedBody != collision.rigidbody) || GetComponent<FixedJoint2D>() == null)
                 {
                         if (transform.parent.GetComponent<BodyPart>().bodyPartType == "Body" || transform.parent.GetComponent<BodyPart>().bodyPartType == "Head" || transform.parent.GetComponent<BodyPart>().bodyPartType == "Mouth")
                         {
@@ -174,7 +201,9 @@ public class BodyPartChildDetect : MonoBehaviour
      void ResetWheel(Collision2D collision)
     {
 
+
         Debug.Log("Resetting Wheel");
+
 
         float tempRotZ = collision.transform.localEulerAngles.z * Mathf.Deg2Rad;
 
@@ -238,6 +267,7 @@ public class BodyPartChildDetect : MonoBehaviour
             foreach (Joint2D wheel in GetComponents<WheelJoint2D>())
             {
                 wheel.enableCollision = false;
+
             }
         }
     }
@@ -250,6 +280,75 @@ public class BodyPartChildDetect : MonoBehaviour
                 wheel.enableCollision = true;
             }
         }
+    }
+    /*
+    public void UpdateJoints()
+    {
+        Debug.Log("UpdateJoints");
+        if (oldBodies.Count == 0)
+        {
+            Debug.Log("UpdateJointsB");
+
+            foreach (WheelJoint2D wheel in GetComponents<WheelJoint2D>())
+            {
+                Debug.Log("UpdateJointsC");
+
+                oldBodies.Add(wheel.connectedBody);
+            }
+        }
+        else
+        {
+            
+            if (newBodies.Count < oldBodies.Count)
+            {
+                oldBodiesTemp.AddRange(oldBodies);
+                SubtractList(ref oldBodiesTemp, newBodies);
+            }
+
+            foreach (WheelJoint2D wheel in GetComponents<WheelJoint2D>())
+            {
+                if (oldBodiesTemp.Contains(wheel.connectedBody))
+                {
+                    oldBodies.Remove(wheel.connectedBody);
+                    Destroy(wheel);
+
+                }
+            }
+
+            newBodies.Clear();
+            oldBodiesTemp.Clear();
+            
+        }
+    }
+    
+    private void SubtractList(ref List<Rigidbody2D> l1, List<Rigidbody2D> l2)
+    {
+        foreach (Rigidbody2D s2 in l2)
+        {
+            for (int i = 0; i < l1.Count; i++)
+            {
+                if (l1[i] == s2)
+                {
+                    l1.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+    }*/
+
+    public void RemoveWheels()
+    {
+        //remove old wheel joints
+        foreach (Joint2D wheel in GetComponents<Joint2D>())
+        {
+            Destroy(wheel);
+        }
+    }
+
+    public void MakeAddWheelsTrue()
+    {
+        rb.GetComponent<BodyPartChildDetect>().addedWheels = true;
+
     }
 }
 
